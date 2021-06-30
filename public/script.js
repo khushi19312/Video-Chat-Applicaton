@@ -89,3 +89,18 @@ const addVideoStream = (video, stream) => {
     })
 }
 
+//chat
+
+send.addEventListener("click", ()=>{
+    console.log('button clicked');
+    socket.emit("sendingMessage", {
+        message: message.value,
+        username: username.value,
+    });
+})
+
+socket.on("broadcastMessage", (data)=>{
+    console.log('client side ', data);
+    // output.innerHTML += '<p><strong>' + data.username + ': </strong>' + data.message + '</p>';
+})
+
