@@ -7,12 +7,12 @@ const { v4 } = require('uuid')
 const port = process.env.PORT || 3000;
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, "public")));
-app.get('/home', (req, res)=>{
+app.get('/', (req, res)=>{
     //make homepage.ejs
     res.render('homepage')
     // res.redirect(`/${v4()}`)
 })
-app.get('/', (req, res)=>{
+app.get('/meet', (req, res)=>{
     //make homepage.ejs
     res.redirect(`/${v4()}`)
 })

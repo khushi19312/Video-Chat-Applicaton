@@ -4,10 +4,10 @@ room_id_inp.addEventListener('keypress', (e)=>{
     if(e.key=='Enter') window.location.replace('/'+room_id_inp.value);;
 });
 let endcall = ()=>{
-    window.location.replace('/home');
+    window.location.replace('/');
 }
 let redirect = ()=>{
     console.log("clicked")
-    window.location.replace('/');
+    window.location.replace('/meet');
 }
 
