@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src='home.js' defer></script>
+    <link rel="stylesheet" type="text/css" href="/styles.css"/>
+    <!-- <link href="/public/css/style.css" rel="stylesheet"> -->
+    <!-- <%- include('../public/styles.css'); %> -->
+</head>
+<body>
+    <div class="header">
+        <h4 id="logo">Teams</h4>
+    </div>
+    <h1 id="date-time"></h1> 
+    <h1 id="welcome">Welcome!</h1>
+    <button class="create-room" onclick="redirect()">Create a meeting room!</button>
+    <input type="text" id="room-id" placeholder="Enter room ID">
+</body>
+<script>
+    let today=new Date()
+    let string=today.getHours()+':'+today.getMinutes()+', '+today.getDate()
+    let month=today.getMonth()
+    if(month==0) string+' Jan';
+    else if(month==0) string+=' Jan';
+    else if(month==1) string+=' Feb';
+    else if(month==2) string+=' Mar';
+    else if(month==3) string+=' Apr';
+    else if(month==4) string+=' May';
+    else if(month==5) string+=' Jun';
+    else if(month==6) string+=' Jul';
+    else if(month==7) string+=' Aug';
+    else if(month==8) string+=' Sep';
+    else if(month==9) string+=' Oct';
+    else if(month==10) string+=' Nov';
+    else if(month==11) string+=' Dec';
+    console.log(string);
+    const node = document.createTextNode(string);
+    document.getElementById("date-time").appendChild(node);
+</script>
+</html>
