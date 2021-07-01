@@ -51,20 +51,22 @@ peer.on('call', (call) => {
     //     addVideoStream(video, peervideostream)
     // })
     callreceived = call;
-    // peers[userId] = call;
 })
-
+let conn =null;
 socket.on('user-connected', (userId) => {
     console.log('connected')
     connectToNewUser(userId, myvideostream)
+    // conn = peer.connect(userId);
     console.log('return')
 })
 socket.on('user-disconnected', (userId) => {
     // console.log(userId);
     if (peers[userId]) peers[userId].close()
 })
+let userIdentity = null;
 peer.on('open', id =>{
     socket.emit('join-meet', MEET_ID, id)
+    userIdentity = id;
 })
 const connectToNewUser = (userId, stream) => {
     console.log('in connectNewUser')
@@ -90,17 +92,20 @@ const addVideoStream = (video, stream) => {
 }
 
 //chat
-
+const send = document.querySelector("#send");
+const message = document.querySelector("#message");
+let output = document.querySelector("#messages");
 send.addEventListener("click", ()=>{
-    console.log('button clicked');
+    console.log('button clicked ', message.value);
+    output.innerHTML += '<p><strong>'+ 'Me' + ': </strong><br>' + message.value + '</p>';
     socket.emit("sendingMessage", {
         message: message.value,
-        username: username.value,
+        user: userIdentity
     });
 })
-
-socket.on("broadcastMessage", (data)=>{
-    console.log('client side ', data);
-    // output.innerHTML += '<p><strong>' + data.username + ': </strong>' + data.message + '</p>';
+socket.on('broadcastMessage', (data)=>{
+    console.log("hello")
+    console.log('client side ', data.message);
+    output.innerHTML += '<p><strong>' + data.user.slice(0,6) + ': </strong><br>' + data.message + '</p>';
 })
 

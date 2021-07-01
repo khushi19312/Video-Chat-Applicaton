@@ -15,20 +15,26 @@
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
 </head>
 <body class="in-call">
-    <div class="header">
+    <!-- <div class="header">
         <h4 id="logo">Teams</h4>
-    </div>
+    </div> -->
     <div id='video-grid'></div>
     <div class='controles'>
-        <button id='audio-toggle' onclick="{window.location.replace('/home')}"><img src="/icons/microphone.png"></button>
-        <button id='video-toggle'><img src="/icons/microphone.png"></button>
-        <button id='end-call'><img src="/icons/microphone.png"></button>
-        <button id='hand-raise'><img src="/icons/microphone.png"></button>
-        <button id='brb'><img src="/icons/microphone.png"></button>
+        <button class='audio'></button>
+        <button class='video'></button>
+        <button class="call" onclick="{window.location.replace('/')}"></button>
+        <!-- <i class="fas fa-phone-slash"></i> -->
+        <!-- <button class="hand"></button>
+        <button class="brb"></button> -->
     </div>
-    <div class="chat">
+    <button class="enable-chat"></button>
+    <div class="chatbox">
+        <button id="close"></button>
+        <div id="messages">
+            
+        </div>
         <input id="message" type="text" placeholder="Message" />
-        <button id="send">Send</button>
+        <button id="send"></button>
     </div>
 </body>
 </html>

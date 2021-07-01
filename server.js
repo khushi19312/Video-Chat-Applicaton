@@ -30,11 +30,13 @@ io.on('connection', socket => {
             // console.log('disconntect', userId)
             socket.to(meetId).emit('user-disconnected', userId)
         })
+
+        socket.on("sendingMessage", (data)=>{
+            console.log('server side', data.message);
+            socket.to(meetId).emit("broadcastMessage", data);
+        })
     })
-    socket.on("sendingMessage", (data)=>{
-        console.log('server side');
-        upgradedServer.emit("broadcastMessage", data);
-    })
+    
     
 })
 
