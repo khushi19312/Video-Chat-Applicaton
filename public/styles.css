@@ -89,7 +89,7 @@ body, h4{
     /* grid-template-columns: repeat(2, 1fr); */
     grid-template-rows: repeat(auto-fill, 400px);
     grid-auto-flow: column;
-    grid-auto-columns: 400px;
+    /* grid-auto-columns: 400px; */
     /* grid-auto-rows: 550px; */
 }
 .video-grid-2{
