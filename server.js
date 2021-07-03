@@ -5,6 +5,7 @@ const server = require('http').Server(app)
 const io = require('socket.io')(server)
 const { v4 } = require('uuid')
 const port = process.env.PORT || 3000;
+let peers={};
 app.set('view engine', 'ejs')
 app.use(express.static(path.join(__dirname, "public")));
 app.get('/', (req, res)=>{
@@ -25,7 +26,7 @@ io.on('connection', socket => {
     socket.on('join-meet', (meetId, userId)=>{
         socket.join(meetId)
         socket.to(meetId).emit('user-connected', userId)
-
+        
         socket.on('disconnect', ()=> {
             // console.log('disconntect', userId)
             socket.to(meetId).emit('user-disconnected', userId)

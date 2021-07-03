@@ -16,29 +16,29 @@ let promise = navigator.mediaDevices.getUserMedia({
     video: true, audio: true
 })
 promise.then((stream) => {
-    // console.log('promise true')
     myvideostream = stream;
+    console.log(myvideostream.getAudioTracks()[0])
     addVideoStream(uservideo, stream)
     if(callreceived){
         callreceived.answer(myvideostream)
+        peers[callreceived.peer]=callreceived;
         const video = document.createElement('video')
-        video.muted = true;
-        callreceived.on('stream', peervideostream => {
+        // video.muted = true;
+        callreceived.on('stream', (peervideostream) => {
             console.log('got video inside')
             currentpeer = callreceived.peerConnection;
-            console.log(currentpeer);
+            // peers[peeruserID] = call;
             addVideoStream(video, peervideostream)
         })
     }
     peer.on('call', (call) => {
-        console.log('stream received')
         call.answer(myvideostream)
+        peers[call.peer]=call;
         const video = document.createElement('video')
-        video.muted = true;
+        // video.muted = true;
         call.on('stream', peervideostream => {
-            console.log('got video inside')
             currentpeer = call.peerConnection;
-            console.log(currentpeer);
+            // console.log(currentpeer);
             addVideoStream(video, peervideostream)
         })
     })
@@ -47,17 +47,12 @@ promise.then((stream) => {
 peer.on('call', (call) => {
     callreceived = call;
     currentpeer = call.peerConnection;
-    console.log(currentpeer);
 })
 
 socket.on('user-connected', (userId) => {
-    console.log('connected')
     connectToNewUser(userId, myvideostream)
-    // conn = peer.connect(userId);
-    console.log('return')
 })
 socket.on('user-disconnected', (userId) => {
-    // console.log(userId);
     if (peers[userId]) peers[userId].close()
 })
 
@@ -69,10 +64,11 @@ const connectToNewUser = (userId, stream) => {
     console.log('in connectNewUser')
     const call = peer.call(userId, stream)
     const video = document.createElement('video')
-    video.muted = true;
+    // video.muted = true;
     call.on('stream', (peervideostream) => {
-        console.log('got video in connectNewUser')
+        // console.log('got video in connectNewUser')
         addVideoStream(video, peervideostream)
+        // peers[peeruserID] = call;
         currentpeer = call.peerConnection;
     })
     call.on('close', ()=>{
@@ -80,39 +76,110 @@ const connectToNewUser = (userId, stream) => {
     })
     peers[userId] = call;
 }
-
+//layout grid video
 const addVideoStream = (video, stream) => {
     video.srcObject = stream
+    console.log(peers)
     video.addEventListener('loadedmetadata', () => {
-        video.play()
-        console.log('rendering video ', Object.keys(peers).length)
-        let cont = document.createElement('div');
-        cont.className = 'container';
-        videogrid.append(cont);
-        cont.append(video);
-        layout();
+        // let {w, h} = layout();
+        var num = Object.keys(peers).length + 1;
+        console.log(num);
+        if(num==1) {
+            video.play()
+            video.style.width = '1000px';
+            video.style.height = 'auto';
+            videogrid.style.setProperty("--cols", 1);
+            videogrid.append(video);
+        }
+        else if(num>1 && num<=4){
+            video.play()
+            document.querySelector("video").style.width = '500px';
+            video.style.width = '500px';
+            video.style.height = 'auto';
+            videogrid.style.setProperty("--cols", 2);
+            // videogrid.style.setProperty("--rows", 2);
+            videogrid.append(video);
+        }
+        else if(num>4 && num<=6){
+            video.play()
+            document.querySelectorAll("video").style.width = '400px';
+            video.style.width = '400px';
+            video.style.height = 'auto';
+            videogrid.style.setProperty("--cols", 3);
+            // videogrid.style.setProperty("--rows", 3);
+            videogrid.append(video);
+        }
+        else if(num>6 && num<=12){
+            video.play()
+            document.querySelector("video").style.width = '300px';
+            video.style.width = '300px';
+            video.style.height = 'auto';
+            videogrid.style.setProperty("--cols", 4);
+            videogrid.style.setProperty("--rows", 4);
+            videogrid.append(video);
+        }
+    })
+}
+const addVideoStreamscreen = (video, stream) => {
+    video.srcObject = stream
+    console.log(peers)
+    video.addEventListener('loadedmetadata', () => {
+        // let {w, h} = layout();
+        var num = Object.keys(peers).length + 2;
+        console.log(num);
+        if(num==1) {
+            video.play()
+            video.style.width = '1000px';
+            video.style.height = 'auto';
+            videogrid.style.setProperty("--cols", 1);
+            videogrid.append(video);
+        }
+        else if(num>1 && num<=4){
+            video.play()
+            document.querySelector("video").style.width = '500px';
+            video.style.width = '500px';
+            video.style.height = 'auto';
+            videogrid.style.setProperty("--cols", 2);
+            // videogrid.style.setProperty("--rows", 2);
+            videogrid.append(video);
+        }
+        else if(num>4 && num<=6){
+            video.play()
+            document.querySelectorAll("video").style.width = '400px';
+            video.style.width = '400px';
+            video.style.height = 'auto';
+            videogrid.style.setProperty("--cols", 3);
+            // videogrid.style.setProperty("--rows", 3);
+            videogrid.append(video);
+        }
+        else if(num>6 && num<=12){
+            video.play()
+            document.querySelector("video").style.width = '300px';
+            video.style.width = '300px';
+            video.style.height = 'auto';
+            videogrid.style.setProperty("--cols", 4);
+            videogrid.style.setProperty("--rows", 4);
+            videogrid.append(video);
+        }
     })
 }
 const layout = ()=>{
     var num = Object.keys(peers).length + 1; 
     console.log(num);
     let w='800px';
-    let h='auto';
+    let h='550px';
     let col= 1;
     if (num > 1 && num <= 4) { 
-        w = '500px';
-        h = 'auto';
+        w = '400px';
+        h = '225px';
         col=2;
 
     } else if (num > 4) {
-        // rowHeight = '24vh';
-        w = '300px';
-        h = 'auto';
+        w = '200px';
+        h = '112.5px';
         col=3;
     }
-    document.querySelector(".video-grid").style.setProperty('--width', w);
-    document.querySelector(".video-grid").style.setProperty('--height', h);
-    document.querySelector(".video-grid").style.setProperty('--cols', col);
+    return {w, h}
 }
 
 //controls
@@ -155,7 +222,7 @@ screenshare.addEventListener("click", (event)=>{
         let videoTrack = stream.getVideoTracks()[0];
         console.log(currentpeer);
         let screen = document.createElement("video")
-        addVideoStream(screen, stream);
+        addVideoStreamscreen(screen, stream);
         videoTrack.onended = ()=>{
             let videoTrack = myvideostream.getVideoTracks()[0];
             let sender = currentpeer.getSenders().find((s)=>{
@@ -171,6 +238,7 @@ screenshare.addEventListener("click", (event)=>{
         
     })
 })
+
 
 //chat
 const send = document.querySelector("#send");
