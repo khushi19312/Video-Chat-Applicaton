@@ -15,23 +15,21 @@
     <link rel="stylesheet" type="text/css" href="/styles.css"/>
 </head>
 <body class="in-call">
-    <!-- <div class="header">
-        <h4 id="logo">Teams</h4>
-    </div> -->
-    <div id='video-grid'></div>
+    <div class='video-grid'>
+    </div>
     <div class='controles'>
         <button class='audio'></button>
         <button class='video'></button>
         <button class="call" onclick="{window.location.replace('/')}"></button>
-        <!-- <i class="fas fa-phone-slash"></i> -->
+        <button class='screenshare'></button>
         <!-- <button class="hand"></button>
         <button class="brb"></button> -->
     </div>
     <button class="enable-chat"></button>
     <div class="chatbox">
         <button id="close"></button>
+        <h4 id="msg-title">Messages</h4>
         <div id="messages">
-            
         </div>
         <input id="message" type="text" placeholder="Message" />
         <button id="send"></button>
