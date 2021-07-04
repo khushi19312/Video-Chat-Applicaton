@@ -25,9 +25,9 @@ close.addEventListener("click", ()=>{
     document.querySelector(".chatbox").style.display="none";
     // chat.style.display = "block";
 })
-let notices = document.querySelector('#messages');
+let popup = document.querySelector('.infotext');
 let textinfo = '<p><strong>meeting ID: </strong>'+ MEET_ID + '</p>';
-notice.innerHTML +=textinfo;
+popup.innerHTML +=textinfo;
 let flaginfo=0;
 info.addEventListener("click", ()=>{
     if(flaginfo===0){
