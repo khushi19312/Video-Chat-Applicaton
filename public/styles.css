@@ -221,6 +221,7 @@ video {
     width: 85%;
     padding: 12px;
     border-radius: 10px;
+    text-align: center;
     outline: none;
     color:rgb(255, 255, 255);
 }

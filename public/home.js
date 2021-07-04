@@ -26,8 +26,8 @@ close.addEventListener("click", ()=>{
     // chat.style.display = "block";
 })
 let notices = document.querySelector('#messages');
-let text = '<p><strong>meeting ID: </strong>'+ MEET_ID + '</p>';
-notice.innerHTML +=text;
+let textinfo = '<p><strong>meeting ID: </strong>'+ MEET_ID + '</p>';
+notice.innerHTML +=textinfo;
 let flaginfo=0;
 info.addEventListener("click", ()=>{
     if(flaginfo===0){

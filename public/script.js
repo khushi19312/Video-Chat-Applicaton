@@ -263,11 +263,13 @@ socket.on('broadcastMessage', (data)=>{
     console.log('client side ', data.message);
     output.innerHTML += '<p><strong>' + data.user.slice(0,6) + ': </strong><br>' + data.message + '</p>';
 })
-//hand raise
+//activity board
 const hand = document.querySelector(".hand");
-let handnotice = document.querySelector("#messages-notice");
+const brb = document.querySelector(".brb");
+let notice = document.querySelector("#messages-notice");
 let handflag=0;
-let handraise=[]
+let brbflag=0;
+let noticelist=[]
 hand.addEventListener("click", ()=>{
     if(handflag===0) {
         hand.style.backgroundImage = "url('/icons/raising-hand.png')";
@@ -276,19 +278,64 @@ hand.addEventListener("click", ()=>{
     }
     else{
         hand.style.backgroundImage = "url('/icons/raising-hand-fill.png')";
-        // socket.emit("hand-down", userIdentity);
+        socket.emit("hand-down", userIdentity);
         handflag=0;
     }
 })
+brb.addEventListener("click", ()=>{
+    if(brbflag===0) {
+        brb.style.backgroundImage = "url('/icons/clock.png')";
+        socket.emit("brb", userIdentity);
+        brbflag=1;
+    }
+    else{
+        brb.style.backgroundImage = "url('/icons/clock-fill.png')";
+        socket.emit("brb-back", userIdentity);
+        brbflag=0;
+    }
+})
+let text="";
 socket.on("hand-raised", (userId)=>{
     console.log('hand raised by ', userId)
-    handraise.push(userId.slice(0,6))
-    let text="";
-    for(let i=0; i<handraise.length; ++i){
-        text+= handraise[i]+", ";
+    noticelist.push('<p><strong>'+userId.slice(0,6)+'</strong> raised hand</p>')
+    text=""
+    for(let i=0; i<noticelist.length; ++i){
+        if(peers[userId]) text+= noticelist[i];
     }
-    handnotice.innerHTML = '<p><strong>Hand raised: </strong>'+text+'</p>';
-    // handnotice.style.display = "block";
+    // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
+    notice.innerHTML = text;
+})
+socket.on("hand-put-down", (userId)=>{
+    console.log('hand put down by ', userId)
+    let index = noticelist.indexOf('<p><strong>'+userId.slice(0,6)+'</strong> raised hand</p>')
+    if(index>-1) noticelist.splice(index, 1)
+    text="";
+    for(let i=0; i<noticelist.length; ++i){
+        if(peers[userId]) text+= noticelist[i];
+    }
+    // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
+    notice.innerHTML = text;
+})
+socket.on("be-right-back", (userId)=>{
+    console.log('brb by ', userId)
+    noticelist.push('<p><strong>'+userId.slice(0,6)+'</strong> will be right back</p>')
+    text=""
+    for(let i=0; i<noticelist.length; ++i){
+        if(peers[userId]) text+= noticelist[i];
+    }
+    // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
+    notice.innerHTML = text;
+})
+socket.on("back", (userId)=>{
+    console.log('back by ', userId)
+    let index = noticelist.indexOf('<p><strong>'+userId.slice(0,6)+'</strong> will be right back</p>')
+    if(index>-1) noticelist.splice(index, 1)
+    text="";
+    for(let i=0; i<noticelist.length; ++i){
+        if(peers[userId]) text+= noticelist[i];
+    }
+    // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
+    notice.innerHTML = text;
 })
 
 

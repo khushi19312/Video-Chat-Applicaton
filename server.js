@@ -40,6 +40,18 @@ io.on('connection', socket => {
             console.log('server side hand raise by', userId);
             socket.to(meetId).emit("hand-raised", userId);
         })
+        socket.on("hand-down", (userId)=>{
+            console.log('server side hand down by', userId);
+            socket.to(meetId).emit("hand-put-down", userId);
+        })
+        socket.on("brb", (userId)=>{
+            console.log('server side brb by', userId);
+            socket.to(meetId).emit("be-right-back", userId);
+        })
+        socket.on("brb-back", (userId)=>{
+            console.log('server side back by', userId);
+            socket.to(meetId).emit("back", userId);
+        })
     })
     
     
