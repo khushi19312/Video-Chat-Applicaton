@@ -26,7 +26,7 @@ io.on('connection', socket => {
     socket.on('join-meet', (meetId, userId)=>{
         socket.join(meetId)
         socket.to(meetId).emit('user-connected', userId)
-        
+
         socket.on('disconnect', ()=> {
             // console.log('disconntect', userId)
             socket.to(meetId).emit('user-disconnected', userId)
@@ -35,6 +35,10 @@ io.on('connection', socket => {
         socket.on("sendingMessage", (data)=>{
             console.log('server side', data.message);
             socket.to(meetId).emit("broadcastMessage", data);
+        })
+        socket.on("hand-raise", (userId)=>{
+            console.log('server side hand raise by', userId);
+            socket.to(meetId).emit("hand-raised", userId);
         })
     })
     

@@ -3,6 +3,7 @@ const end_call = document.querySelector('#end-call');
 const chat = document.querySelector(".enable-chat")
 const close = document.querySelector("#close")
 const info= document.querySelector(".info");
+const caption = document.querySelector(".caption")
 // const iclose= document.querySelector("#infoclose");
 if(room_id_inp) room_id_inp.addEventListener('keypress', (e)=>{
     if(e.key=='Enter') window.location.replace('/'+room_id_inp.value);;
@@ -14,20 +15,19 @@ let redirect = ()=>{
     console.log("clicked")
     window.location.replace('/meet');
 }
-
 chat.addEventListener("click", ()=>{
     console.log(document.querySelector(".chatbox").style.display);
     document.querySelector(".chatbox").style.display="block";
-    chat.style.display = "none";
+    // chat.style.display = "none";
 })
 close.addEventListener("click", ()=>{
     console.log(document.querySelector(".chatbox").style.display);
     document.querySelector(".chatbox").style.display="none";
-    chat.style.display = "block";
+    // chat.style.display = "block";
 })
-let popup = document.querySelector('.infotext');
+let notices = document.querySelector('#messages');
 let text = '<p><strong>meeting ID: </strong>'+ MEET_ID + '</p>';
-popup.innerHTML +=text;
+notice.innerHTML +=text;
 let flaginfo=0;
 info.addEventListener("click", ()=>{
     if(flaginfo===0){
@@ -41,7 +41,40 @@ info.addEventListener("click", ()=>{
     }
     
 })
-// iclose.addEventListener("click", ()=>{
-//     console.log('close info')
-//     popup.style.display = "none";
-// })
+//caption
+let cctext = document.getElementById('caption-text');
+let recognizing = false;
+let recognition = new webkitSpeechRecognition();
+recognition.continuous = true;
+recognition.interimResults = true;
+recognition.onstart = () => {
+    recognizing = true;
+};
+recognition.onend = () => {
+    recognizing = false;
+};
+recognition.onresult = (event) => {
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if(event.results[i][0].confidence > 0.4) {
+            console.log(capitalize(event.results[i][0].transcript))
+            cctext.innerHTML = capitalize(event.results[i][0].transcript);
+        }
+    }
+};
+const capitalize = (s) => {
+    let first_char = /\S/;
+    return s.replace(first_char, (m) => { 
+        return m.toUpperCase(); 
+  }); 
+}
+caption.addEventListener("click", (event)=>{
+    if(recognizing) {
+        recognition.stop();
+        cctext.style.display = "none";
+        return;
+    }
+    else {
+        cctext.style.display = "inline-block";
+        recognition.start();
+    }
+})

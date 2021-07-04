@@ -92,6 +92,8 @@ const addVideoStream = (video, stream) => {
             videogrid.append(video);
         }
         else if(num>1 && num<=4){
+            if(num==3) videogrid.style.setProperty('grid-auto-flow', 'row');
+            videogrid.style.setProperty('grid-auto-flow', 'column');
             video.play()
             document.querySelector("video").style.width = '500px';
             video.style.width = '500px';
@@ -101,6 +103,8 @@ const addVideoStream = (video, stream) => {
             videogrid.append(video);
         }
         else if(num>4 && num<=6){
+            if(num==4) videogrid.style.setProperty('grid-auto-flow', 'row');
+            videogrid.style.setProperty('grid-auto-flow', 'column');
             video.play()
             document.querySelectorAll("video").style.width = '400px';
             video.style.width = '400px';
@@ -110,6 +114,8 @@ const addVideoStream = (video, stream) => {
             videogrid.append(video);
         }
         else if(num>6 && num<=12){
+            if(num==5 || num==9) videogrid.style.setProperty('grid-auto-flow', 'row');
+            videogrid.style.setProperty('grid-auto-flow', 'column');
             video.play()
             document.querySelector("video").style.width = '300px';
             video.style.width = '300px';
@@ -221,15 +227,15 @@ screenshare.addEventListener("click", (event)=>{
         // peer.call(userIdentity, stream);
         let videoTrack = stream.getVideoTracks()[0];
         console.log(currentpeer);
-        let screen = document.createElement("video")
-        addVideoStreamscreen(screen, stream);
+        // let screen = document.createElement("video")
+        // addVideoStreamscreen(screen, stream);
         videoTrack.onended = ()=>{
             let videoTrack = myvideostream.getVideoTracks()[0];
             let sender = currentpeer.getSenders().find((s)=>{
                 return s.track.kind == videoTrack.kind
             })
             sender.replaceTrack(videoTrack)
-            screen.remove()
+            // screen.remove()
         }
         let sender = currentpeer.getSenders().find((s)=>{
             return s.track.kind == videoTrack.kind
@@ -256,6 +262,33 @@ socket.on('broadcastMessage', (data)=>{
     console.log("hello")
     console.log('client side ', data.message);
     output.innerHTML += '<p><strong>' + data.user.slice(0,6) + ': </strong><br>' + data.message + '</p>';
+})
+//hand raise
+const hand = document.querySelector(".hand");
+let handnotice = document.querySelector("#messages-notice");
+let handflag=0;
+let handraise=[]
+hand.addEventListener("click", ()=>{
+    if(handflag===0) {
+        hand.style.backgroundImage = "url('/icons/raising-hand.png')";
+        socket.emit("hand-raise", userIdentity);
+        handflag=1;
+    }
+    else{
+        hand.style.backgroundImage = "url('/icons/raising-hand-fill.png')";
+        // socket.emit("hand-down", userIdentity);
+        handflag=0;
+    }
+})
+socket.on("hand-raised", (userId)=>{
+    console.log('hand raised by ', userId)
+    handraise.push(userId.slice(0,6))
+    let text="";
+    for(let i=0; i<handraise.length; ++i){
+        text+= handraise[i]+", ";
+    }
+    handnotice.innerHTML = '<p><strong>Hand raised: </strong>'+text+'</p>';
+    // handnotice.style.display = "block";
 })
 
 
