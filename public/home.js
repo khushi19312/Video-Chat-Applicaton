@@ -3,7 +3,7 @@ const end_call = document.querySelector('#end-call');
 const chat = document.querySelector(".enable-chat")
 const close = document.querySelector("#close")
 const info= document.querySelector(".info");
-const caption = document.querySelector(".caption")
+
 // const iclose= document.querySelector("#infoclose");
 if(room_id_inp) room_id_inp.addEventListener('keypress', (e)=>{
     if(e.key=='Enter') window.location.replace('/'+room_id_inp.value);;
@@ -18,11 +18,15 @@ let redirect = ()=>{
 chat.addEventListener("click", ()=>{
     console.log(document.querySelector(".chatbox").style.display);
     document.querySelector(".chatbox").style.display="block";
+    chat.style.backgroundImage = "url('/icons/chat-bubbles-with-ellipsis.png')";
+    chat.style.backgroundColor = "#6264a7";
     // chat.style.display = "none";
 })
 close.addEventListener("click", ()=>{
     console.log(document.querySelector(".chatbox").style.display);
     document.querySelector(".chatbox").style.display="none";
+    chat.style.backgroundImage = "url('/icons/chat-bubbles-with-ellipsis (1).png')";
+    chat.style.backgroundColor = "rgb(80, 80, 80)";
     // chat.style.display = "block";
 })
 let popup = document.querySelector('.infotext');
@@ -32,49 +36,17 @@ let flaginfo=0;
 info.addEventListener("click", ()=>{
     if(flaginfo===0){
         popup.style.display = "block";
+        info.style.backgroundImage = "url('/icons/info-white.png')";
+        info.style.backgroundColor = "#6264a7";
         flaginfo=1;
     }
     else{
         console.log('close info')
         popup.style.display = "none";
+        info.style.backgroundImage = "url('/icons/info.png')";
+        info.style.backgroundColor = "rgb(80, 80, 80)";
         flaginfo=0;
     }
     
 })
 //caption
-let cctext = document.getElementById('caption-text');
-let recognizing = false;
-let recognition = new webkitSpeechRecognition();
-recognition.continuous = true;
-recognition.interimResults = true;
-recognition.onstart = () => {
-    recognizing = true;
-};
-recognition.onend = () => {
-    recognizing = false;
-};
-recognition.onresult = (event) => {
-    for (let i = event.resultIndex; i < event.results.length; ++i) {
-        if(event.results[i][0].confidence > 0.4) {
-            console.log(capitalize(event.results[i][0].transcript))
-            cctext.innerHTML = capitalize(event.results[i][0].transcript);
-        }
-    }
-};
-const capitalize = (s) => {
-    let first_char = /\S/;
-    return s.replace(first_char, (m) => { 
-        return m.toUpperCase(); 
-  }); 
-}
-caption.addEventListener("click", (event)=>{
-    if(recognizing) {
-        recognition.stop();
-        cctext.style.display = "none";
-        return;
-    }
-    else {
-        cctext.style.display = "inline-block";
-        recognition.start();
-    }
-})

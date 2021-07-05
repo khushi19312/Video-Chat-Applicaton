@@ -198,11 +198,13 @@ audio.addEventListener("click", ()=>{
     console.log('heard audio toggle')
     myvideostream.getAudioTracks()[0].enabled = !(myvideostream.getAudioTracks()[0].enabled);
     if(audioflag===0){
-        audio.style.backgroundImage = 'url("/icons/icons8-mute-unmute-96.png")';
+        audio.style.backgroundImage = 'url("/icons/microphone-slash.png")';
+        audio.style.backgroundColor = "#6264a7";
         audioflag=1;
     }
     else{
-        audio.style.backgroundImage = 'url("/icons/icons8-microphone-96.png")';
+        audio.style.backgroundImage = 'url("/icons/microphone.png")';
+        audio.style.backgroundColor = "rgb(80, 80, 80)";
         audioflag=0;
     }
 })
@@ -211,10 +213,12 @@ video.addEventListener("click", ()=>{
     myvideostream.getVideoTracks()[0].enabled = !(myvideostream.getVideoTracks()[0].enabled);
     if(videoflag===1){
         video.style.backgroundImage = 'url("/icons/video-camera-close.png")';
+        video.style.backgroundColor = "rgb(80, 80, 80)";
         videoflag=0;
     }
     else{
         video.style.backgroundImage = 'url("/icons/video-camera.png")';
+        video.style.backgroundColor = "#6264a7";
         videoflag=1;
     }
 })
@@ -227,6 +231,8 @@ screenshare.addEventListener("click", (event)=>{
         // peer.call(userIdentity, stream);
         let videoTrack = stream.getVideoTracks()[0];
         console.log(currentpeer);
+        screenshare.style.backgroundImage = 'url("/icons/upload-white.png")';
+        screenshare.style.backgroundColor = "#6264a7";
         // let screen = document.createElement("video")
         // addVideoStreamscreen(screen, stream);
         videoTrack.onended = ()=>{
@@ -235,6 +241,8 @@ screenshare.addEventListener("click", (event)=>{
                 return s.track.kind == videoTrack.kind
             })
             sender.replaceTrack(videoTrack)
+            screenshare.style.backgroundImage = 'url("/icons/upload.png")';
+            screenshare.style.backgroundColor = "rgb(80, 80, 80)";
             // screen.remove()
         }
         let sender = currentpeer.getSenders().find((s)=>{
@@ -263,6 +271,7 @@ socket.on('broadcastMessage', (data)=>{
     console.log('client side ', data.message);
     output.innerHTML += '<p><strong>' + data.user.slice(0,6) + ': </strong><br>' + data.message + '</p>';
 })
+
 //activity board
 const hand = document.querySelector(".hand");
 const brb = document.querySelector(".brb");
@@ -272,24 +281,28 @@ let brbflag=0;
 let noticelist=[]
 hand.addEventListener("click", ()=>{
     if(handflag===0) {
-        hand.style.backgroundImage = "url('/icons/raising-hand.png')";
+        hand.style.backgroundImage = "url('/icons/raising-hand-white.png')";
+        hand.style.backgroundColor = "#6264a7";
         socket.emit("hand-raise", userIdentity);
         handflag=1;
     }
     else{
-        hand.style.backgroundImage = "url('/icons/raising-hand-fill.png')";
+        hand.style.backgroundImage = "url('/icons/raising-hand.png')";
+        hand.style.backgroundColor = "rgb(80, 80, 80)";
         socket.emit("hand-down", userIdentity);
         handflag=0;
     }
 })
 brb.addEventListener("click", ()=>{
     if(brbflag===0) {
-        brb.style.backgroundImage = "url('/icons/clock.png')";
+        brb.style.backgroundImage = "url('/icons/clock-white.png')";
+        brb.style.backgroundColor = "#6264a7";
         socket.emit("brb", userIdentity);
         brbflag=1;
     }
     else{
-        brb.style.backgroundImage = "url('/icons/clock-fill.png')";
+        brb.style.backgroundImage = "url('/icons/clock.png')";
+        brb.style.backgroundColor = "rgb(80, 80, 80)";
         socket.emit("brb-back", userIdentity);
         brbflag=0;
     }
@@ -337,6 +350,49 @@ socket.on("back", (userId)=>{
     // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
     notice.innerHTML = text;
 })
-
+//caption
+const caption = document.querySelector(".caption")
+let cctext = document.getElementById('caption-text');
+let recognizing = false;
+let recognition = new webkitSpeechRecognition();
+recognition.continuous = true;
+recognition.interimResults = true;
+recognition.onstart = () => {
+    recognizing = true;
+};
+recognition.onend = () => {
+    recognizing = false;
+};
+recognition.onresult = (event) => {
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if(event.results[i][0].confidence > 0.4) {
+            console.log(capitalize(event.results[i][0].transcript))
+            if(audioflag===0) cctext.innerHTML = capitalize(event.results[i][0].transcript);
+            console.log(capitalize(event.results[i][0].transcript))
+        }
+    }
+};
+const capitalize = (s) => {
+    let first_char = /\S/;
+    return s.replace(first_char, (m) => { 
+        return m.toUpperCase(); 
+  }); 
+}
+caption.addEventListener("click", (event)=>{
+    console.log('captions')
+    if(recognizing) {
+        caption.style.backgroundImage = "url('/icons/subtitles.png')";
+        caption.style.backgroundColor = "rgb(80, 80, 80)";
+        recognition.stop();
+        cctext.style.display = "none";
+        return;
+    }
+    else {
+        caption.style.backgroundImage = "url('/icons/subtitles-white.png')";
+        caption.style.backgroundColor = "#6264a7";
+        cctext.style.display = "inline-block";
+        recognition.start();
+    }
+})
 
 
