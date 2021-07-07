@@ -253,8 +253,27 @@ screenshare.addEventListener("click", (event)=>{
     })
 })
 
-
 //chat
+// const send = document.querySelector("#send");
+// const message = document.querySelector("#message");
+// let output = document.querySelector("#messages");
+// send.addEventListener("click", ()=>{
+//     console.log('button clicked ', message.value);
+//     output.innerHTML += '<p><strong>'+ 'Me' + ': </strong><br>' + message.value + '</p>';
+//     socket.emit("sendingMessage", JSON.stringify({
+//         text: message.value,
+//         username: userIdentity
+//     }));
+// })
+// socket.on('broadcastMessage', (data)=>{
+//     console.log("hello")
+//     console.log('client side ', data.text, data.username);
+//     // output.innerHTML += '<p><strong>' + data.user.slice(0,6) + ': </strong><br>' + data.message + '</p>';
+//     output.innerHTML = ""
+//     data.forEach((msg)=>{
+//         output.innerHTML += '<p><strong>' + msg.username.slice(0,6) + ': </strong><br>' + msg.text + '</p>';
+//     })
+// })
 const send = document.querySelector("#send");
 const message = document.querySelector("#message");
 let output = document.querySelector("#messages");
@@ -262,14 +281,15 @@ send.addEventListener("click", ()=>{
     console.log('button clicked ', message.value);
     output.innerHTML += '<p><strong>'+ 'Me' + ': </strong><br>' + message.value + '</p>';
     socket.emit("sendingMessage", {
-        message: message.value,
-        user: userIdentity
+        text: message.value,
+        userId: userIdentity,
+        userName: "xyz"
     });
 })
 socket.on('broadcastMessage', (data)=>{
     console.log("hello")
     console.log('client side ', data.message);
-    output.innerHTML += '<p><strong>' + data.user.slice(0,6) + ': </strong><br>' + data.message + '</p>';
+    output.innerHTML += '<p><strong>' + data.userName + " "+ data.userId.slice(0,6) + ': </strong><br>' + data.text + '</p>';
 })
 
 //activity board
@@ -350,7 +370,7 @@ socket.on("back", (userId)=>{
     // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
     notice.innerHTML = text;
 })
-//caption
+//caption, status-implemented locally
 const caption = document.querySelector(".caption")
 let cctext = document.getElementById('caption-text');
 let recognizing = false;
@@ -394,5 +414,9 @@ caption.addEventListener("click", (event)=>{
         recognition.start();
     }
 })
-
-
+//voice commands
+document.addEventListener("keypress", (e)=>{
+    if(e.key=='Shift'){
+        //recognition
+    }
+})

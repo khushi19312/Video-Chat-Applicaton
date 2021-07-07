@@ -6,7 +6,7 @@ const info= document.querySelector(".info");
 
 // const iclose= document.querySelector("#infoclose");
 if(room_id_inp) room_id_inp.addEventListener('keypress', (e)=>{
-    if(e.key=='Enter') window.location.replace('/'+room_id_inp.value);;
+    if(e.key=='Enter') window.location.replace('/'+room_id_inp.value);
 });
 let endcall = ()=>{
     window.location.replace('/');
