@@ -304,7 +304,7 @@ if(send) send.addEventListener("click", ()=>{
     socket.emit("sendingMessage", {
         text: message.value,
         userId: EmailId,
-        userName: "xyz"
+        userName: UName
     });
 })
 socket.on('broadcastMessage', (data)=>{
