@@ -1,0 +1,78 @@
+const socket = io('/')
+const peer = new Peer(undefined)
+const sendroom = document.querySelector("#send-ex");
+const messageroom = document.querySelector("#message-ex")
+let outputroom = document.querySelector("#messages-ex")
+const editusername = document.querySelector(".edit-name")
+let userName="Lorem Ipsum";
+// let EmailId="";
+let participantlist = {};
+let nametext = document.querySelector(".username")
+let userIdentity=null;
+
+//email-username
+let editname = ()=>{
+    console.log("clicked")
+    let newname = window.prompt("Enter new user name", "");
+    if(newname){
+        userName=newname;
+        nametext.innerHTML = newname;
+    } 
+    participantlist[EmailId] = userName;
+}
+let func = ()=>{
+    let email = "";
+    if(EmailId==="") {
+        email = window.prompt("Enter your Email ID", "abc@xyz.com");
+        if(email){
+            EmailId=email;
+        }
+    }
+    participantlist[EmailId] = userName;
+}
+
+//controls
+let exitroom = ()=>{
+    window.location.replace('/');
+}
+let redirectcall = ()=>{
+    console.log("clicked")
+    window.location.replace('/meet/'+MEET_ID+"?email="+EmailId+"&name="+userName);
+}
+
+//chat
+socket.on('user-connected', (userId) => {
+    userIdentity=userId
+})
+socket.on('user-disconnected', (userId) => {
+    if (participantlist[EmailId]) peers[EmailId].close()
+})
+peer.on('open', id =>{
+    socket.emit('join-meet', MEET_ID, id, socket.id)
+    userIdentity = id;
+})
+sendroom.addEventListener("click", ()=>{
+    console.log('button clicked ', messageroom.value);
+    // output.innerHTML += '<p><strong>'+ 'Me' + ': </strong><br>' + messageroom.value + '</p>';
+    socket.emit("sendingMessage", {
+        text: messageroom.value,
+        userId: EmailId,
+        userName: userName
+    });
+    console.log('emitted')
+})
+socket.on('broadcastMessage', (data)=>{
+    console.log("hello")
+    console.log('client side ', data);
+    let text=""
+    for(let i=0; i<data.length; ++i){
+        if(data[i].userId === EmailId){
+            text+='<p style="text-align: right;"><strong>Me' + ' </strong><br>' + data[i].text + '</p>';
+        }
+        else{
+            text+='<p><strong>' + data[i].userName + ' </strong><br>' + data[i].text + '</p>';
+        }
+    }
+    outputroom.innerHTML = text;
+})
+

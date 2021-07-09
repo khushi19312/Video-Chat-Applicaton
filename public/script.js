@@ -1,6 +1,5 @@
 const socket = io('/')
-const peer = new Peer(undefined
-)
+const peer = new Peer(undefined)
 const videogrid = document.querySelector('.video-grid')
 const uservideo = document.createElement('video')
 uservideo.muted = true;
@@ -55,9 +54,8 @@ socket.on('user-connected', (userId) => {
 socket.on('user-disconnected', (userId) => {
     if (peers[userId]) peers[userId].close()
 })
-
 peer.on('open', id =>{
-    socket.emit('join-meet', MEET_ID, id)
+    socket.emit('join-meet', MEET_ID, id, socket.id)
     userIdentity = id;
 })
 const connectToNewUser = (userId, stream) => {
@@ -76,6 +74,7 @@ const connectToNewUser = (userId, stream) => {
     })
     peers[userId] = call;
 }
+
 //layout grid video
 const addVideoStream = (video, stream) => {
     video.srcObject = stream
@@ -192,8 +191,16 @@ const layout = ()=>{
 const audio= document.querySelector(".audio");
 const video= document.querySelector(".video");
 const screenshare= document.querySelector(".screenshare");
+const chat = document.querySelector(".enable-chat")
+const close = document.querySelector("#close")
+let popup = document.querySelector('.infotext');
+const info= document.querySelector(".info");
+let textinfo = '<p><strong>meeting ID: </strong>'+ MEET_ID + '</p>';
+popup.innerHTML +=textinfo;
+const end_call = document.querySelector('#end-call');
 let videoflag=0;
 let audioflag=0;
+let flaginfo=0;
 audio.addEventListener("click", ()=>{
     console.log('heard audio toggle')
     myvideostream.getAudioTracks()[0].enabled = !(myvideostream.getAudioTracks()[0].enabled);
@@ -252,44 +259,67 @@ screenshare.addEventListener("click", (event)=>{
         
     })
 })
+chat.addEventListener("click", ()=>{
+    console.log(document.querySelector(".chatbox").style.display);
+    document.querySelector(".chatbox").style.display="block";
+    chat.style.backgroundImage = "url('/icons/chat-bubbles-with-ellipsis.png')";
+    chat.style.backgroundColor = "#6264a7";
+    // chat.style.display = "none";
+})
+close.addEventListener("click", ()=>{
+    console.log(document.querySelector(".chatbox").style.display);
+    document.querySelector(".chatbox").style.display="none";
+    chat.style.backgroundImage = "url('/icons/chat-bubbles-with-ellipsis (1).png')";
+    chat.style.backgroundColor = "rgb(80, 80, 80)";
+    // chat.style.display = "block";
+})
+info.addEventListener("click", ()=>{
+    if(flaginfo===0){
+        popup.style.display = "block";
+        info.style.backgroundImage = "url('/icons/info-white.png')";
+        info.style.backgroundColor = "#6264a7";
+        flaginfo=1;
+    }
+    else{
+        console.log('close info')
+        popup.style.display = "none";
+        info.style.backgroundImage = "url('/icons/info.png')";
+        info.style.backgroundColor = "rgb(80, 80, 80)";
+        flaginfo=0;
+    }
+    
+})
+let endcall = ()=>{
+    console.log(MEET_ID)
+    window.location.replace('/'+MEET_ID+"?email="+EmailId);
+}
 
 //chat
-// const send = document.querySelector("#send");
-// const message = document.querySelector("#message");
-// let output = document.querySelector("#messages");
-// send.addEventListener("click", ()=>{
-//     console.log('button clicked ', message.value);
-//     output.innerHTML += '<p><strong>'+ 'Me' + ': </strong><br>' + message.value + '</p>';
-//     socket.emit("sendingMessage", JSON.stringify({
-//         text: message.value,
-//         username: userIdentity
-//     }));
-// })
-// socket.on('broadcastMessage', (data)=>{
-//     console.log("hello")
-//     console.log('client side ', data.text, data.username);
-//     // output.innerHTML += '<p><strong>' + data.user.slice(0,6) + ': </strong><br>' + data.message + '</p>';
-//     output.innerHTML = ""
-//     data.forEach((msg)=>{
-//         output.innerHTML += '<p><strong>' + msg.username.slice(0,6) + ': </strong><br>' + msg.text + '</p>';
-//     })
-// })
 const send = document.querySelector("#send");
 const message = document.querySelector("#message");
 let output = document.querySelector("#messages");
-send.addEventListener("click", ()=>{
+if(send) send.addEventListener("click", ()=>{
     console.log('button clicked ', message.value);
-    output.innerHTML += '<p><strong>'+ 'Me' + ': </strong><br>' + message.value + '</p>';
+    // output.innerHTML += '<p><strong>'+ 'Me' + ': </strong><br>' + message.value + '</p>';
     socket.emit("sendingMessage", {
         text: message.value,
-        userId: userIdentity,
+        userId: EmailId,
         userName: "xyz"
     });
 })
 socket.on('broadcastMessage', (data)=>{
     console.log("hello")
-    console.log('client side ', data.message);
-    output.innerHTML += '<p><strong>' + data.userName + " "+ data.userId.slice(0,6) + ': </strong><br>' + data.text + '</p>';
+    console.log('client side ', data);
+    let text=""
+    for(let i=0; i<data.length; ++i){
+        if(data[i].userId === EmailId){
+            text+='<p style="text-align: right;"><strong>Me </strong><br>' + data[i].text + '</p>';
+        }
+        else{
+            text+='<p><strong>' + data[i].userName + ' </strong><br>' + data[i].text + '</p>';
+        }
+    }
+    if(output) output.innerHTML = text;
 })
 
 //activity board
@@ -370,6 +400,7 @@ socket.on("back", (userId)=>{
     // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
     notice.innerHTML = text;
 })
+
 //caption, status-implemented locally
 const caption = document.querySelector(".caption")
 let cctext = document.getElementById('caption-text');
@@ -420,3 +451,4 @@ document.addEventListener("keypress", (e)=>{
         //recognition
     }
 })
+

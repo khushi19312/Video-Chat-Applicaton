@@ -15,55 +15,40 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }).t
 const port = process.env.PORT || 3000;
 let peers={};
 app.set('view engine', 'ejs')
+
 app.use(express.static(path.join(__dirname, "public")));
-
-//-------------------------------------------------------------------
-// const { MongoClient } = require('mongodb');
-
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-// client.connect(err => {
-//   const collection = client.db("test").collection("devices");
-//   // perform actions on the collection object
-//   client.close();
-// });
-//------------------------------------------------------------------
+app.use(express.static(path.join(__dirname, "/public/")));
 
 
-//DB-------------------------------------------------------------
-// app.use(cors());
-// app.use(express.json());
-// app.use(express.urlencoded({
-//     extended: true,
-// }));
-// const db = require('./queries')
-// app.get("/:meet/room", db.getMessages);
-// app.post("/:meet/room", db.createMessage);
-// let meetIdentity=null;
-// let emitMessages = ()=>{
-//     db.getSocketMessages(meetIdentity).then((result) =>{
-//         io.emit("broadcastMessage", result)
-//     }).catch(console.log);
-// }
-//---------------------------------------------------------------
 app.get('/', (req, res)=>{
     //make homepage.ejs
-    res.render('homepage')
+    res.render('homepage.ejs')
     // res.redirect(`/${v4()}`)
 })
 app.get('/meet', (req, res)=>{
     //make homepage.ejs
-    res.redirect(`/${v4()}`)
+    res.redirect(`/${v4()}?email=${req.query.email}`)
 }) 
 app.get('/:meet', (req, res)=>{
-    res.render('meet', { meetId: req.params.meet })
+    res.render('room.ejs', { meetId: req.params.meet, EmailId: req.query.email })
+})
+app.get('/meet/:meet', (req, res)=>{
+    res.render('meet.ejs', { meetId: req.params.meet, EmailId: req.query.email, Name: req.query.name })
 })
 
-
 io.on('connection', socket => {
-    socket.on('join-meet', (meetId, userId)=>{
+    socket.on('join-meet', (meetId, userId, socketId)=>{
         socket.join(meetId)
         socket.to(meetId).emit('user-connected', userId)
-
+        
+        Chat.find({meetID: meetId}, (err, result)=>{
+            if(err) throw err;
+            else{
+                console.log(result);
+                io.to(socketId).emit("broadcastMessage", result);
+            }
+        })
+        
         socket.on('disconnect', ()=> {
             // console.log('disconntect', userId)
             socket.to(meetId).emit('user-disconnected', userId)
@@ -73,7 +58,15 @@ io.on('connection', socket => {
             console.log('server side', data.text);
             const chat = new Chat({text:data.text, meetID:meetId, userId:data.userId, userName:data.userName})
             chat.save().then(()=>{
-                socket.to(meetId).emit("broadcastMessage", data);
+                //retrieve from the database where meeting id is meetID  --> array data
+                Chat.find({meetID: meetId}, (err, result)=>{
+                    if(err) throw err;
+                    else{
+                        console.log(result);
+                        io.to(meetId).emit("broadcastMessage", result);
+                    }
+                })
+                
             })
         })
 
