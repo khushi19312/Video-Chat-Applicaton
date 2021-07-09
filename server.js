@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, "/public/")));
 
 app.get('/', (req, res)=>{
     //make homepage.ejs
-    res.render('homepage.ejs')
+    res.render('homepage.ejs', {EmailId: req.query.email})
     // res.redirect(`/${v4()}`)
 })
 app.get('/meet', (req, res)=>{

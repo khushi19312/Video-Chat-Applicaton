@@ -33,7 +33,7 @@ let func = ()=>{
 
 //controls
 let exitroom = ()=>{
-    window.location.replace('/');
+    window.location.replace('/?email='+EmailId);
 }
 let redirectcall = ()=>{
     console.log("clicked")
