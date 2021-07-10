@@ -109,7 +109,7 @@ body{
     background-image: url("/icons/add-user.png");
     opacity: 100%;
     background-repeat: no-repeat;
-    background-size: 25px 25px;
+    background-size: 20px 20px;
     background-position: center;
     background-color: rgb(245, 245, 245);;
     border-radius: 100%;
@@ -117,8 +117,8 @@ body{
     width: 30px;
     margin: 4px;
     position: absolute;
-    top: 15%;
-    left: 94%;
+    top: 2%;
+    left: 75%;
     border-color: transparent;
 	outline: none;
 	border: none;

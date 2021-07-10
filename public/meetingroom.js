@@ -10,8 +10,9 @@ let nametext = document.querySelector(".username")
 let userIdentity=null;
 
 //email-username
-let addtolist = (EmailId, userName) =>{
-    participantlist[EmailId] = userName;
+let addtolist = () =>{
+    console.log("heellooo")
+    socket.emit("new-participant", {email: EmailId, user:userName})
     // addtodiv();
 }
 let editname = ()=>{
@@ -21,7 +22,7 @@ let editname = ()=>{
         userName=newname;
         nametext.innerHTML = newname;
     } 
-    addtolist(EmailId, userName)
+    socket.emit("participant-name-update", {email: EmailId, user:userName})
 }
 let func = ()=>{
     let email = "";
@@ -46,8 +47,7 @@ let redirectcall = ()=>{
 //chat
 socket.on('user-connected', (userId) => {
     userIdentity=userId
-    // participantlist[EmailId] = userName;
-    console.log(EmailId, userName)
+    socket.emit("new-participant", {email: EmailId, user:userName})
 })
 socket.on('user-disconnected', (userId) => {
     // if (participantlist[EmailId]) participantlist[EmailId].remove()
@@ -55,7 +55,7 @@ socket.on('user-disconnected', (userId) => {
 peer.on('open', id =>{
     socket.emit('join-meet', MEET_ID, id, socket.id)
     userIdentity = id;
-    // console.log(EmailId, userName)
+    console.log(EmailId, userName)
 })
 sendroom.addEventListener("click", ()=>{
     console.log('button clicked ', messageroom.value);
@@ -80,6 +80,7 @@ socket.on('broadcastMessage', (data)=>{
         }
     }
     outputroom.innerHTML = text;
+    // socket.emit("new-participant", {email: EmailId, user:userName})
 })
 
 //invite
@@ -98,6 +99,23 @@ invite.addEventListener("click", ()=>{
 })
 
 //participants
+const partdiv = document.querySelector(".part");
+socket.on("participants", (data)=>{
+    console.log(data)
+    let ptext='<p><strong>Me</strong><br>'+ EmailId +'</p>'
+    console.log(ptext)
+    for(let i=0; i<data.length; ++i){
+        if(data[i].email === EmailId){
+            continue;
+        }
+        else{
+            ptext+='<p><strong>'+data[i].userName+'</strong><br>'+ data[i].EmailId +'</p>';
+        }
+        console.log(ptext)
+    }
+    partdiv.innerHTML = ptext;
+})
+
 // let addtodiv = ()=>{
 //     console.log(participantlist)
 //     const partdiv = document.querySelector(".part");
