@@ -42,12 +42,10 @@ promise.then((stream) => {
         })
     })
 })
-
 peer.on('call', (call) => {
     callreceived = call;
     currentpeer = call.peerConnection;
 })
-
 socket.on('user-connected', (userId) => {
     connectToNewUser(userId, myvideostream)
 })
@@ -195,7 +193,10 @@ const chat = document.querySelector(".enable-chat")
 const close = document.querySelector("#close")
 let popup = document.querySelector('.infotext');
 const info= document.querySelector(".info");
-let textinfo = '<p><strong>meeting ID: </strong>'+ MEET_ID + '</p>';
+let textinfo = '';
+textinfo+='<p><strong>Meeting Details</strong></p>'
+textinfo+='<p><strong>URL: </strong>https://khushi-vc-app.herokuapp.com/'+MEET_ID+'</p>'
+textinfo+='<p><strong>Meet Id: </strong>'+MEET_ID+'</p>'
 popup.innerHTML +=textinfo;
 const end_call = document.querySelector('#end-call');
 let videoflag=0;
@@ -333,13 +334,13 @@ hand.addEventListener("click", ()=>{
     if(handflag===0) {
         hand.style.backgroundImage = "url('/icons/raising-hand-white.png')";
         hand.style.backgroundColor = "#6264a7";
-        socket.emit("hand-raise", userIdentity);
+        socket.emit("hand-raise", UName, userIdentity);
         handflag=1;
     }
     else{
         hand.style.backgroundImage = "url('/icons/raising-hand.png')";
         hand.style.backgroundColor = "rgb(80, 80, 80)";
-        socket.emit("hand-down", userIdentity);
+        socket.emit("hand-down", UName, userIdentity);
         handflag=0;
     }
 })
@@ -347,20 +348,20 @@ brb.addEventListener("click", ()=>{
     if(brbflag===0) {
         brb.style.backgroundImage = "url('/icons/clock-white.png')";
         brb.style.backgroundColor = "#6264a7";
-        socket.emit("brb", userIdentity);
+        socket.emit("brb", UName, userIdentity);
         brbflag=1;
     }
     else{
         brb.style.backgroundImage = "url('/icons/clock.png')";
         brb.style.backgroundColor = "rgb(80, 80, 80)";
-        socket.emit("brb-back", userIdentity);
+        socket.emit("brb-back", UName, userIdentity);
         brbflag=0;
     }
 })
 let text="";
-socket.on("hand-raised", (userId)=>{
-    console.log('hand raised by ', userId)
-    noticelist.push('<p><strong>'+userId.slice(0,6)+'</strong> raised hand</p>')
+socket.on("hand-raised", (usern, userId)=>{
+    console.log('hand raised by ', usern)
+    noticelist.push('<p><strong>'+usern+'</strong> raised hand</p>')
     text=""
     for(let i=0; i<noticelist.length; ++i){
         if(peers[userId]) text+= noticelist[i];
@@ -368,9 +369,9 @@ socket.on("hand-raised", (userId)=>{
     // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
     notice.innerHTML = text;
 })
-socket.on("hand-put-down", (userId)=>{
-    console.log('hand put down by ', userId)
-    let index = noticelist.indexOf('<p><strong>'+userId.slice(0,6)+'</strong> raised hand</p>')
+socket.on("hand-put-down", (usern, userId)=>{
+    console.log('hand put down by ', usern)
+    let index = noticelist.indexOf('<p><strong>'+usern+'</strong> raised hand</p>')
     if(index>-1) noticelist.splice(index, 1)
     text="";
     for(let i=0; i<noticelist.length; ++i){
@@ -379,9 +380,9 @@ socket.on("hand-put-down", (userId)=>{
     // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
     notice.innerHTML = text;
 })
-socket.on("be-right-back", (userId)=>{
-    console.log('brb by ', userId)
-    noticelist.push('<p><strong>'+userId.slice(0,6)+'</strong> will be right back</p>')
+socket.on("be-right-back", (usern, userId)=>{
+    console.log('brb by ', usern)
+    noticelist.push('<p><strong>'+usern+'</strong> will be right back</p>')
     text=""
     for(let i=0; i<noticelist.length; ++i){
         if(peers[userId]) text+= noticelist[i];
@@ -389,9 +390,9 @@ socket.on("be-right-back", (userId)=>{
     // handnotice.innerHTML = '<p><strong>'+text+'</strong> raised hand</p>';
     notice.innerHTML = text;
 })
-socket.on("back", (userId)=>{
-    console.log('back by ', userId)
-    let index = noticelist.indexOf('<p><strong>'+userId.slice(0,6)+'</strong> will be right back</p>')
+socket.on("back", (usern, userId)=>{
+    console.log('back by ', usern)
+    let index = noticelist.indexOf('<p><strong>'+usern+'</strong> will be right back</p>')
     if(index>-1) noticelist.splice(index, 1)
     text="";
     for(let i=0; i<noticelist.length; ++i){
@@ -402,12 +403,84 @@ socket.on("back", (userId)=>{
 })
 
 //caption, status-implemented locally
+// const caption = document.querySelector(".caption")
+// let capflag=0;
+// let cctext = document.getElementById('caption-text');
+// let recognizing = true;
+// let recognition = new webkitSpeechRecognition();
+// recognition.continuous = true;
+// recognition.interimResults = true;
+// let cursocket = null;
+// recognition.onstart = () => {
+//     recognizing = true;
+// };
+// recognition.onend = () => {
+//     recognizing = false;
+// };
+// recognition.onresult = (event) => {
+//     for (let i = event.resultIndex; i < event.results.length; ++i) {
+//         if(event.results[i][0].confidence > 0.4) {
+//             console.log(capitalize(event.results[i][0].transcript))
+//             if(audioflag===0) cctext.innerHTML = capitalize(event.results[i][0].transcript);
+//             console.log(capitalize(event.results[i][0].transcript))
+//             socket.emit("caps", {text:capitalize(event.results[i][0].transcript), user: userName, tosocket: cursocket})
+//         }
+//     }
+// };
+// const capitalize = (s) => {
+//     let first_char = /\S/;
+//     return s.replace(first_char, (m) => { 
+//         return m.toUpperCase(); 
+//   }); 
+// }
+// let caps = document.querySelector(".captions");
+// let textcap=""
+// socket.on("caps-broadcast", (data)=>{
+//     console.log(data.text)
+//     textcap = '<p>'+data.username+': '+ data.text +'</p>';
+//     caps.innerHTML+=textcap;
+// })
+// caption.addEventListener("click", (event)=>{
+//     console.log('captions')
+//     if(capflag) {
+//         caption.style.backgroundImage = "url('/icons/subtitles.png')";
+//         caption.style.backgroundColor = "rgb(80, 80, 80)";
+//         // recognition.stop();
+//         document.querySelector(".live-captions").style.display = "inline-block";
+//         // return;
+//         socket.emit("req-caption-end", socket.id);
+//     }
+//     else {
+//         caption.style.backgroundImage = "url('/icons/subtitles-white.png')";
+//         caption.style.backgroundColor = "#6264a7";
+//         document.querySelector(".live-captions").style.display = "inline-block";
+//         // recognition.start();
+//         socket.emit("req-caption", socket.id);
+//     }
+// })
+// socket.on("req-caption-broadcast", (socketId)=>{
+//     console.log("caption req")
+//     caption.style.backgroundImage = "url('/icons/subtitles-white.png')";
+//     caption.style.backgroundColor = "#6264a7";
+//     cctext.style.display = "inline-block";
+//     recognition.start();
+//     cursocket = socketId;
+// })
+// socket.on("req-caption-end-broadcast", ()=>{
+//     console.log("caption req cancel")
+//     caption.style.backgroundImage = "url('/icons/subtitles.png')";
+//     caption.style.backgroundColor = "rgb(80, 80, 80)";
+//     recognition.stop();
+//     cctext.style.display = "none";
+//     cursocket = null;
+// })
 const caption = document.querySelector(".caption")
 let cctext = document.getElementById('caption-text');
+let caps = document.querySelector(".captions");
 let recognizing = false;
 let recognition = new webkitSpeechRecognition();
 recognition.continuous = true;
-recognition.interimResults = true;
+recognition.interimResults = false;
 recognition.onstart = () => {
     recognizing = true;
 };
@@ -420,6 +493,7 @@ recognition.onresult = (event) => {
             console.log(capitalize(event.results[i][0].transcript))
             if(audioflag===0) cctext.innerHTML = capitalize(event.results[i][0].transcript);
             console.log(capitalize(event.results[i][0].transcript))
+            socket.emit("caption-broadcast", ({text:capitalize(event.results[i][0].transcript), user: UName}))
         }
     }
 };
@@ -429,26 +503,111 @@ const capitalize = (s) => {
         return m.toUpperCase(); 
   }); 
 }
+let capflag=0;
 caption.addEventListener("click", (event)=>{
     console.log('captions')
-    if(recognizing) {
+    if(capflag===1) {
         caption.style.backgroundImage = "url('/icons/subtitles.png')";
         caption.style.backgroundColor = "rgb(80, 80, 80)";
         recognition.stop();
+        socket.emit("caption-stopped");
         cctext.style.display = "none";
-        return;
+        capflag=0;
     }
     else {
         caption.style.backgroundImage = "url('/icons/subtitles-white.png')";
         caption.style.backgroundColor = "#6264a7";
         cctext.style.display = "inline-block";
         recognition.start();
+        capflag=1;
     }
 })
+let textcap="";
+let speaker = document.querySelector("#speaker");
+socket.on("captions", (data)=>{
+    console.log(data.text)
+    document.querySelector(".live-captions").style.display = "block";
+    speaker.textContent = data.user;
+    textcap = '<p>'+data.text +'</p>';
+    caps.innerHTML+=textcap;
+})
+socket.on("captions-stop", ()=>{
+    console.log("end")
+    document.querySelector(".live-captions").style.display = "none";
+})
+
 //voice commands
-document.addEventListener("keypress", (e)=>{
-    if(e.key=='Shift'){
-        //recognition
+const vcmdbtn = document.querySelector(".v-cmd");
+const vcmdinstructions = document.querySelector(".voice-commands")
+let vcmdflag=0;
+let commands = false;
+let rec = new webkitSpeechRecognition();
+rec.continuous = true;
+rec.interimResults = true;
+rec.onstart = () => {
+    console.log("started")
+};
+rec.onend = () => {
+    console.log("stopped");
+};
+rec.onresult = (event) => {
+    for (let i = event.resultIndex; i < event.results.length; ++i) {
+        console.log(event.results[i][0].transcript)
+        if(event.results[i][0].confidence > 0.4) {
+            if(event.results[i][0].transcript === "hand"){
+                hand.style.backgroundImage = "url('/icons/raising-hand-white.png')";
+                hand.style.backgroundColor = "#6264a7";
+                socket.emit("hand-raise", UName, userIdentity)
+                handflag=1;
+            }
+            if(event.results[i][0].transcript === "brb" || event.results[i][0].transcript === "be right back"){
+                brb.style.backgroundImage = "url('/icons/clock-white.png')";
+                brb.style.backgroundColor = "#6264a7";
+                socket.emit("brb", UName, userIdentity)
+                brbflag=1;
+            }
+            if(event.results[i][0].transcript === "hand down"){
+                hand.style.backgroundImage = "url('/icons/raising-hand.png')";
+                hand.style.backgroundColor = "rgb(80, 80, 80)";
+                socket.emit("hand-down", UName, userIdentity)
+                handflag=0;
+            }
+            if(event.results[i][0].transcript === "back"){
+                brb.style.backgroundImage = "url('/icons/clock.png')";
+                brb.style.backgroundColor = "rgb(80, 80, 80)";
+                socket.emit("brb-back", UName, userIdentity)
+                brbflag=0;
+            }
+        }
+    }
+};
+let commandflag=0;
+window.addEventListener("keydown", (e)=>{
+    console.log(e)
+    let keycode = e.key;
+	if(keycode==="v"){
+        if(commandflag===0) {
+            rec.start();
+            commandflag=1;
+        }
+        else{
+            rec.stop();
+            commandflag=0;
+        } 
+    }
+})
+vcmdbtn.addEventListener("click", ()=>{
+    if(vcmdflag===0){
+        vcmdbtn.style.backgroundImage = "url('/icons/voice-white.png')";
+        vcmdbtn.style.backgroundColor = "#6264a7";
+        vcmdinstructions.style.display = "block";
+        vcmdflag=1;
+    }
+    else{
+        vcmdbtn.style.backgroundImage = "url('/icons/voice.png')";
+        vcmdbtn.style.backgroundColor = "rgb(80, 80, 80)";
+        vcmdinstructions.style.display = "none";
+        vcmdflag=0;
     }
 })
 

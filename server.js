@@ -70,21 +70,38 @@ io.on('connection', socket => {
             })
         })
 
-        socket.on("hand-raise", (userId)=>{
-            console.log('server side hand raise by', userId);
-            socket.to(meetId).emit("hand-raised", userId);
+        socket.on("hand-raise", (username, userId)=>{
+            console.log('server side hand raise by', username, userId);
+            socket.to(meetId).emit("hand-raised", username, userId);
         })
-        socket.on("hand-down", (userId)=>{
-            console.log('server side hand down by', userId);
-            socket.to(meetId).emit("hand-put-down", userId);
+        socket.on("hand-down", (username, userId)=>{
+            console.log('server side hand down by', username, userId);
+            socket.to(meetId).emit("hand-put-down", username, userId);
         })
-        socket.on("brb", (userId)=>{
-            console.log('server side brb by', userId);
-            socket.to(meetId).emit("be-right-back", userId);
+        socket.on("brb", (username, userId)=>{
+            console.log('server side brb by', username, userId);
+            socket.to(meetId).emit("be-right-back", username, userId);
         })
-        socket.on("brb-back", (userId)=>{
-            console.log('server side back by', userId);
-            socket.to(meetId).emit("back", userId);
+        socket.on("brb-back", (username, userId)=>{
+            console.log('server side back by', username, userId);
+            socket.to(meetId).emit("back", username, userId);
+        })
+        // socket.on("req-caption", socketId =>{
+        //     socket.to(meetId).emit("req-caption-braodcast", socketId)
+        // })
+        // socket.on("req-caption", socketId =>{
+        //     socket.to(meetId).emit("req-caption-end-braodcast", socketId)
+        // })
+        // socket.on("caps", (cp)=>{
+        //     socket.to(cp.tosocket).emit("cap-broadcast", {text:cp.text, user: cp.user});
+        // })
+        socket.on("caption-broadcast", (data)=>{
+            console.log(data.text)
+            socket.to(meetId).emit("captions", data);
+        })
+        socket.on("caption-stopped", ()=>{
+            console.log("end")
+            socket.to(meetId).emit("captions-stop");
         })
     })   
 })

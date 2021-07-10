@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
+        let participantlist = {};
         const MEET_ID = "<%= meetId %>"
         let EmailId = "<%= EmailId %>"
         console.log(EmailId==="")
@@ -17,9 +18,10 @@
     <title>Room</title>
     <link rel="stylesheet" type="text/css" href="/styles-room.css"/>
 </head>
-<body >
+<body onload="addtolist(EmailId, userName);">
     <div class="header">
         <h4 id="logo">Teams</h4>
+        <h4 id="email"></h4>
     </div>
     <div>
         <h5 class="username-head">User-Name</h5>
@@ -29,6 +31,7 @@
     <div>
         <button class='join-call' onclick="redirectcall()">Join call</button>
         <button class='leave-room' onclick="exitroom()">Leave Room</button>
+        
     </div>
     <div class="chatbox-ex">
         <h4 id="msg-title">Messages</h4>
@@ -37,8 +40,26 @@
         <input id="message-ex" type="text" placeholder="Message" />
         <button id="send-ex"></button>
     </div>
-    <div class="participants" style="scroll-behavior: smooth;">
+    <button class='invite'></button>
+    <div class="info">
+        <p><strong>Meeting Details</strong></p>
+        <p><strong>URL:</strong></p>
+        <p><strong>Meet Id:</strong></p>
     </div>
+    <!-- <div class="participants" style="scroll-behavior: smooth;">
+        <button class='invite'></button>
+        <h4 class="part-heading">Participants</h4>
+        <div class="part">
+        </div>
+    </div> -->
     
 </body>
+<script>
+    document.getElementById("email").textContent = EmailId;
+    let text=''
+    text+='<p><strong>Meeting Details</strong></p>'
+    text+='<p><strong>URL: </strong>https://khushi-vc-app.herokuapp.com/'+MEET_ID+'</p>'
+    text+='<p><strong>Meet Id: </strong>'+MEET_ID+'</p>'
+    document.querySelector(".info").innerHTML = text;
+</script>
 </html>

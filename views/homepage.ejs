@@ -16,6 +16,7 @@
 <body>
     <div class="header">
         <h4 id="logo">Teams</h4>
+        <h4 id="email"></h4>
     </div>
     <h1 id="date-time"></h1> 
     <h1 id="welcome">Welcome!</h1>
@@ -39,8 +40,8 @@
     else if(month==9) string+=' Oct';
     else if(month==10) string+=' Nov';
     else if(month==11) string+=' Dec';
-    console.log(string);
     const node = document.createTextNode(string);
     document.getElementById("date-time").appendChild(node);
+    document.getElementById("email").textContent = EmailId;
 </script>
 </html>

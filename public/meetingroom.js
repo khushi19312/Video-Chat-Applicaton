@@ -6,11 +6,14 @@ let outputroom = document.querySelector("#messages-ex")
 const editusername = document.querySelector(".edit-name")
 let userName="Lorem Ipsum";
 // let EmailId="";
-let participantlist = {};
 let nametext = document.querySelector(".username")
 let userIdentity=null;
 
 //email-username
+let addtolist = (EmailId, userName) =>{
+    participantlist[EmailId] = userName;
+    // addtodiv();
+}
 let editname = ()=>{
     console.log("clicked")
     let newname = window.prompt("Enter new user name", "");
@@ -18,7 +21,7 @@ let editname = ()=>{
         userName=newname;
         nametext.innerHTML = newname;
     } 
-    participantlist[EmailId] = userName;
+    addtolist(EmailId, userName)
 }
 let func = ()=>{
     let email = "";
@@ -28,7 +31,7 @@ let func = ()=>{
             EmailId=email;
         }
     }
-    participantlist[EmailId] = userName;
+    addtolist(EmailId, userName)
 }
 
 //controls
@@ -43,13 +46,16 @@ let redirectcall = ()=>{
 //chat
 socket.on('user-connected', (userId) => {
     userIdentity=userId
+    // participantlist[EmailId] = userName;
+    console.log(EmailId, userName)
 })
 socket.on('user-disconnected', (userId) => {
-    if (participantlist[EmailId]) peers[EmailId].close()
+    // if (participantlist[EmailId]) participantlist[EmailId].remove()
 })
 peer.on('open', id =>{
     socket.emit('join-meet', MEET_ID, id, socket.id)
     userIdentity = id;
+    // console.log(EmailId, userName)
 })
 sendroom.addEventListener("click", ()=>{
     console.log('button clicked ', messageroom.value);
@@ -76,3 +82,28 @@ socket.on('broadcastMessage', (data)=>{
     outputroom.innerHTML = text;
 })
 
+//invite
+const invite = document.querySelector(".invite")
+const info = document.querySelector(".info")
+let inviteflag = 0;
+invite.addEventListener("click", ()=>{
+    if(inviteflag===0){
+        info.style.display = "block";
+        inviteflag=1;
+    }
+    else{
+        info.style.display = "none";
+        inviteflag=0;
+    }
+})
+
+//participants
+// let addtodiv = ()=>{
+//     console.log(participantlist)
+//     const partdiv = document.querySelector(".part");
+//     let ptext='<p><strong>Me</strong><br>'+ EmailId +'</p>'
+//     for(let i in participantlist.length){
+//         ptext+='<p class="p"><strong>'+ i +'</strong><br>'+ participantlist[i] +'</p>'
+//     }
+//     partdiv.innerHTML = ptext
+// }

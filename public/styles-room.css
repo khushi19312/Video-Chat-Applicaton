@@ -29,6 +29,19 @@ body{
     padding: 18px;
     padding-left: 5%;
 }
+#email{
+    font-family: "Roboto";
+    font-size: 14px;
+    position: fixed; 
+    top: 0%;
+    width: 50%;
+    right: 0%;
+    text-align: right;
+    color:lightgrey;
+    padding: 20px;
+    padding-right: 5%;
+    z-index: 10px;
+}
 .username-head{
     font-family: "Roboto";
     font-size: 20px;
@@ -92,6 +105,71 @@ body{
     color: white;
     text-align: left;
 }
+.invite{
+    background-image: url("/icons/add-user.png");
+    opacity: 100%;
+    background-repeat: no-repeat;
+    background-size: 25px 25px;
+    background-position: center;
+    background-color: rgb(245, 245, 245);;
+    border-radius: 100%;
+    height: 30px;
+    width: 30px;
+    margin: 4px;
+    position: absolute;
+    top: 15%;
+    left: 94%;
+    border-color: transparent;
+	outline: none;
+	border: none;
+}
+.info{
+    position: absolute;
+    top: 22%;
+    right: 4%;
+    font-family: "Roboto";
+    font-size: 14px;
+    padding: 10px;
+    width: 20%;
+    display: none;
+    color: #6264a7;
+    background-color: white;
+    border-radius: 5px;
+}
+.part-heading{
+    font-family: "Roboto";
+    font-size: 18px;
+    position: absolute;
+    top: 1%;
+    left: 3%;
+    padding: 12px;
+    color:#6264a7;
+}
+.participants{
+    position: absolute;
+    width: 16%;
+    height: 90%;
+    top: 10%;
+    left: 84%;
+    border-radius: 10px;
+    background-color:rgb(245, 245, 245);
+    display: block;
+    overflow-y: scroll;
+}
+.part{
+    font-family: "Roboto";
+    font-size: 14px;
+    position: absolute;
+    top: 6%;
+    left: 3%;
+    padding: 12px;
+    margin: 5px;
+    color:rgb(70, 70, 70);
+}
+.p{
+    border-left: #6264a7;
+    border-width: 1px;
+}
 .chatbox-ex{
     position: absolute;
     width: 40%;
@@ -101,6 +179,7 @@ body{
     border-radius: 10px;
     background-color:white;
     display: block;
+    overflow-y: scroll;
 }
 #msg-title{
     font-family: "Roboto";
