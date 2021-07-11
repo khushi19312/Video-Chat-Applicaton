@@ -8,6 +8,7 @@ const { v4 } = require('uuid')
 const mongoose = require('mongoose')
 const Chat = require('./models/messages')
 const Part = require('./models/participants')
+const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants')
 // const mongoDB = "mongodb+srv://user:sweets123@cluster0.ic26y.mongodb.net/message-database?retryWrites=true&w=majority";
 const mongoDB = "mongodb+srv://user:sweets123@vc-application.ic26y.mongodb.net/message-database?retryWrites=true&w=majority";
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true }).then(()=>{
@@ -42,26 +43,24 @@ io.on('connection', socket => {
     socket.on('join-meet', (meetId, userId, socketId)=>{
         socket.join(meetId)
         socket.to(meetId).emit('user-connected', userId)
-        
         Part.find({meetID: meetId}, (err, result)=>{
             if(err) throw err;
             else{
-                console.log(result);
+                // console.log(result);
                 io.to(socketId).emit("participants", result);
             }
-        })
+        }).catch(err => console.log(err))
         Chat.find({meetID: meetId}, (err, result)=>{
             if(err) throw err;
             else{
                 // console.log(result);
                 io.to(socketId).emit("broadcastMessage", result);
             }
-        })
+        }).catch(err => console.log(err))
         socket.on('disconnect', ()=> {
             // console.log('disconntect', userId)
             socket.to(meetId).emit('user-disconnected', userId)
         })
-
         socket.on("sendingMessage", (data)=>{
             console.log('server side', data.text);
             const chat = new Chat({text:data.text, meetID:meetId, userId:data.userId, userName:data.userName})
@@ -75,9 +74,10 @@ io.on('connection', socket => {
                     }
                 })
                 
+            }).catch((err)=>{
+                throw err;
             })
         })
-
         socket.on("hand-raise", (username, userId)=>{
             console.log('server side hand raise by', username, userId);
             socket.to(meetId).emit("hand-raised", username, userId);
@@ -104,38 +104,53 @@ io.on('connection', socket => {
         })
         socket.on("new-participant", (data)=>{
             console.log('server side np', data);
-            const part = new Part({EmailId:data.email, userName:data.user, meetID:meetId})
-            part.save().then(()=>{
-                //retrieve from the database where meeting id is meetID  --> array data
-                Part.find({meetID: meetId}, (err, result)=>{
-                    if(err) throw err;
-                    else{
-                        console.log(result);
-                        io.to(meetId).emit("participants", result);
+            let flag=0;
+            let res=null;
+            Part.find({meetID: meetId}, (err, result)=>{
+                if(err) throw err;
+                else {
+                    if(result) for(let i=0; i<result.length; ++i){
+                        if(result[i].EmailId===data.email){
+                            flag=1;
+                        }
                     }
-                })
-                
-            })
+                    const part = new Part({EmailId:data.email, userName:data.user, meetID:meetId})
+                    if(flag===0) part.save().then(()=>{
+                        //retrieve from the database where meeting id is meetID  --> array data
+                        console.log("saved")
+                        Part.find({meetID: meetId}, (err, result2)=>{
+                            if(err) throw err;
+                            else{
+                                console.log("emitting participants");
+                                io.to(meetId).emit("participants", result2);
+                            }
+                        }).catch((err)=>{
+                            console.log(err);
+                        })
+                    }).catch((err)=>{
+                        console.log(err);
+                    })
+                }
+            }).catch(err => console.log(err))
+            
         })
         socket.on("participant-name-update", (data)=>{
             console.log('server side', data);
-            // let oldval = null;
             let oldval = {EmailId: data.email};
             var newval = { $set: {userName:data.user, meetID:meetId} };
             Part.updateOne(oldval, newval, (err, result)=>{
                 if(err) throw err
                 else{
-                    Part.find({meetID: meetId}, (err, result)=>{
+                    Part.find({meetID: meetId}, (err, result2)=>{
                         if(err) throw err;
                         else{
-                            console.log(result);
-                            io.to(meetId).emit("participants", result);
+                            console.log(result2);
+                            io.to(meetId).emit("participants", result2);
                         }
-                    })
+                    }).catch(err => console.log(err))
                 }
-            }); 
+            }).catch(err => console.log(err)); 
         })
-
     })   
 })
 

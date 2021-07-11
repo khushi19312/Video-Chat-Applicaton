@@ -145,6 +145,16 @@ video {
     display: none;
     overflow-y: scroll;
 }
+.spacing{
+    position:inherit;
+    top: 90%;
+    left: 0%;
+    width: 100%;
+    height: 10%;
+    border-radius: 10px;
+    outline: none;
+    background-color: rgb(245, 245, 245);
+}
 #msg-title{
     font-family: "Roboto";
     font-size: 18px;
@@ -157,17 +167,19 @@ video {
 #message{
     font-family: "Roboto";
     font-size: 14px;
-    position: inherit;
+    position: absolute;
     size: fill;
-    top: 92%;
-    left: 3%;
-    width: 85%;
+    top: 90%;
+    left: 79%;
+    width: 16%;
     padding: 12px;
     border-radius: 10px;
     outline: none;
     color:rgb(70, 70, 70);
     background-color: rgb(255, 255, 255);
     border-color: white;
+    z-index: 1;
+    display: none;
 }
 #messages{
     font-family: "Roboto";
@@ -192,13 +204,14 @@ video {
     height: 30px;
     width: 30px;
     margin: 4px;
-    top: 92.5%;
-    position: inherit;
+    top: 90.5%;
+    position: absolute;
     border-color: transparent;
 	outline: none;
 	border: none;
-    left: 83%;
-
+    left: 94%;
+    z-index: 2;
+    display: none;
 }
 .notice-board{
     position: absolute;

@@ -194,17 +194,18 @@ body{
 #message-ex{
     font-family: "Roboto";
     font-size: 14px;
-    position: inherit;
+    position: absolute;
     size: fill;
-    top: 90%;
-    left: 3%;
-    width: 88%;
+    top: 87%;
+    left: 33%;
+    width: 35%;
     padding: 12px;
     border-radius: 10px;
     outline: none;
     color:rgb(70, 70, 70);
     background-color: rgb(245, 245, 245);;
     border-color: white;
+    z-index: 1;
 }
 #messages-ex{
     font-family: "Roboto";
@@ -222,18 +223,18 @@ body{
     background-image: url("/icons/send2.png");
     opacity: 100%;
     background-repeat: no-repeat;
-    background-size: 23px 23px;
+    background-size: 26px 26px;
     background-position: center;
     background-color: rgb(245, 245, 245);;
     border-radius: 100%;
-    height: 30px;
-    width: 30px;
+    height: 36px;
+    width: 36px;
     margin: 4px;
-    top: 91%;
-    position: inherit;
+    top: 87%;
+    position: fixed;
     border-color: transparent;
 	outline: none;
 	border: none;
-    left: 87%;
-
+    left: 66%;
+    z-index: 1;
 }

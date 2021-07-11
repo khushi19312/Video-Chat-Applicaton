@@ -1,10 +1,6 @@
-// import tippy from 'tippy.js';
-// import 'tippy.js/dist/tippy.css';
 const socket = io('/')
 const peer = new Peer(undefined)
-const videogrid = document.querySelector('.video-grid')
-const uservideo = document.createElement('video')
-uservideo.muted = true;
+//variables for function
 let conn =null;
 let currentpeer;
 let userIdentity = null;
@@ -13,56 +9,66 @@ let myvideostream;
 let callreceived;
 let senders = [];
 
+//for renderinf users media stream (video)
+const videogrid = document.querySelector('.video-grid')
+const uservideo = document.createElement('video')
+uservideo.muted = true;
+
+//Beginning with getting the the user media form the user's device to render their video and audio on the webpage.
+//If the promise is false then user media is not obtained and hence sharing media with peers is not possible
 let promise = navigator.mediaDevices.getUserMedia({
     video: true, audio: true
 })
 promise.then((stream) => {
     myvideostream = stream;
-    console.log(myvideostream.getAudioTracks()[0])
+    // console.log(myvideostream.getAudioTracks()[0])
     addVideoStream(uservideo, stream)
     if(callreceived){
+        //accepting recieved calls for peers
         callreceived.answer(myvideostream)
         peers[callreceived.peer]=callreceived;
         const video = document.createElement('video')
-        // video.muted = true;
+        //rendering peers video on the web page when recieved
         callreceived.on('stream', (peervideostream) => {
             console.log('got video inside')
             currentpeer = callreceived.peerConnection;
-            // peers[peeruserID] = call;
             addVideoStream(video, peervideostream)
         })
     }
     peer.on('call', (call) => {
+        //accepting recieved calls for peers
         call.answer(myvideostream)
         peers[call.peer]=call;
         const video = document.createElement('video')
-        // video.muted = true;
+        //rendering peers video on the web page when recieved
         call.on('stream', peervideostream => {
             currentpeer = call.peerConnection;
-            // console.log(currentpeer);
             addVideoStream(video, peervideostream)
         })
     })
 })
+//if the call from peer is recieved before user media is taken and rendered
 peer.on('call', (call) => {
     callreceived = call;
     currentpeer = call.peerConnection;
 })
+//socket event listens, recieved as signals of peer connection
 socket.on('user-connected', (userId) => {
-    connectToNewUser(userId, myvideostream)
+    onNewUserConnection(userId, myvideostream)
 })
 socket.on('user-disconnected', (userId) => {
     if (peers[userId]) peers[userId].close()
 })
+//joining the meeting
 peer.on('open', id =>{
     socket.emit('join-meet', MEET_ID, id, socket.id)
     userIdentity = id;
 })
-const connectToNewUser = (userId, stream) => {
+//function that is called when a fellow peer joins the meeting
+const onNewUserConnection = (userId, stream) => {
     console.log('in connectNewUser')
     const call = peer.call(userId, stream)
     const video = document.createElement('video')
-    // video.muted = true;
     call.on('stream', (peervideostream) => {
         // console.log('got video in connectNewUser')
         addVideoStream(video, peervideostream)
@@ -266,6 +272,8 @@ screenshare.addEventListener("click", (event)=>{
 chat.addEventListener("click", ()=>{
     console.log(document.querySelector(".chatbox").style.display);
     document.querySelector(".chatbox").style.display="block";
+    document.querySelector("#message").style.display="block";
+    document.querySelector("#send").style.display="block";
     chat.style.backgroundImage = "url('/icons/chat-bubbles-with-ellipsis.png')";
     chat.style.backgroundColor = "#6264a7";
     // chat.style.display = "none";
@@ -273,6 +281,8 @@ chat.addEventListener("click", ()=>{
 close.addEventListener("click", ()=>{
     console.log(document.querySelector(".chatbox").style.display);
     document.querySelector(".chatbox").style.display="none";
+    document.querySelector("#message").style.display="none";
+    document.querySelector("#send").style.display="none";
     chat.style.backgroundImage = "url('/icons/chat-bubbles-with-ellipsis (1).png')";
     chat.style.backgroundColor = "rgb(80, 80, 80)";
     // chat.style.display = "block";
@@ -331,6 +341,7 @@ socket.on('broadcastMessage', (data)=>{
         }
     }
     if(output) output.innerHTML = text;
+    document.querySelector(".chatbox").scrollTop = document.querySelector(".chatbox").scrollHeight;
 })
 
 //activity board

@@ -16,7 +16,7 @@ let flagcheck=0;
 let addtolist = () =>{
     console.log("heellooo", flagcheck)
     if(flagcheck===0) {
-        socket.emit("new-participant", {email: EmailId, user:userName})
+        // setTimeout(socket.emit("new-participant", {email: EmailId, user:userName}), 5000)
         console.log("emited")
         flagcheck=1;
     }
@@ -63,6 +63,7 @@ peer.on('open', id =>{
     socket.emit('join-meet', MEET_ID, id, socket.id)
     userIdentity = id;
     console.log(EmailId, userName)
+    socket.emit("new-participant", {email: EmailId, user:userName})
 })
 sendroom.addEventListener("click", ()=>{
     console.log('button clicked ', messageroom.value);
@@ -108,11 +109,11 @@ invite.addEventListener("click", ()=>{
 //participants
 const partdiv = document.querySelector(".part");
 socket.on("participants", (data)=>{
-    console.log(data)
+    console.log("got event")
     let ptext='<p><strong>Me</strong><br>'+ EmailId +'</p>'
     console.log(ptext)
     for(let i=0; i<data.length; ++i){
-        if(data[i].email === EmailId){
+        if(data[i].EmailId === EmailId){
             continue;
         }
         else{
@@ -122,13 +123,3 @@ socket.on("participants", (data)=>{
     }
     partdiv.innerHTML = ptext;
 })
-
-// let addtodiv = ()=>{
-//     console.log(participantlist)
-//     const partdiv = document.querySelector(".part");
-//     let ptext='<p><strong>Me</strong><br>'+ EmailId +'</p>'
-//     for(let i in participantlist.length){
-//         ptext+='<p class="p"><strong>'+ i +'</strong><br>'+ participantlist[i] +'</p>'
-//     }
-//     partdiv.innerHTML = ptext
-// }
