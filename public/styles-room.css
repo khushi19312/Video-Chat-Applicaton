@@ -51,6 +51,16 @@ body{
     padding: 18px;
     padding-left: 5%;
 }
+.name-cont{
+    font-family: "Roboto";
+    font-size: 15px;
+    top: 30%;
+    width: 18%;
+    position: absolute;
+    color: darkgray;
+    padding: 18px;
+    padding-left: 5%;
+}
 .username{
     font-family: "Roboto";
     font-size: 40px;
@@ -81,7 +91,7 @@ body{
     font-family: "Roboto";
     font-size: 16px;
     position: absolute;
-    top: 60%;
+    top: 75%;
     left: 5%;
     width: 268px;
     padding: 14px;
@@ -95,7 +105,7 @@ body{
     font-family: "Roboto";
     font-size: 16px;
     position: absolute;
-    top: 70%;
+    top: 85%;
     left: 5%;
     width: 268px;
     padding: 14px;
