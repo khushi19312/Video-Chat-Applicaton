@@ -125,8 +125,8 @@ body{
 }
 .info{
     position: absolute;
-    top: 22%;
-    right: 4%;
+    top: 18%;
+    right: 2%;
     font-family: "Roboto";
     font-size: 14px;
     padding: 10px;
@@ -135,6 +135,7 @@ body{
     color: #6264a7;
     background-color: white;
     border-radius: 5px;
+    z-index: 1;
 }
 .part-heading{
     font-family: "Roboto";

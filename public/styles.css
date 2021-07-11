@@ -1,4 +1,5 @@
 /* Home page */
+
 body, h4{
     margin: 0px;
     padding: 0px;
@@ -376,6 +377,24 @@ video {
     padding: 12px;
     color: rgb(80, 80, 80);
 }
+#close-caption{
+    background-image: url("/icons/close.png");
+    opacity: 100%;
+    background-repeat: no-repeat;
+    background-size: 10px 10px;
+    background-position: center;
+    background-color: rgb(245, 245, 245);;
+    border-radius: 100%;
+    height: 12px;
+    width: 12px;
+    margin: 4px;
+    top: 3%;
+    position: inherit;
+    border-color: transparent;
+	outline: none;
+	border: none;
+    left: 90%;
+}
 .info{
     background-image: url("/icons/info.png");
     background-repeat: no-repeat;
@@ -526,4 +545,10 @@ video {
     padding: 10px;
     border-radius: 10px;
     transition: 0.5s ease-in-out;
+}
+.tippy-box[data-theme~='custom'] {
+    background-color: #6264a7;
+    color: white;
+    font-family: "Roboto";
+    font-size: 14px;
 }

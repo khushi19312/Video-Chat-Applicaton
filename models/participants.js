@@ -3,7 +3,7 @@ const participantList = new mongoose.Schema({
     EmailId:{
         type: String,
         required: true,
-        unique: true
+        // unique: true
     },
     userName:{
         type: String,

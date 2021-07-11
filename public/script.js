@@ -1,3 +1,5 @@
+// import tippy from 'tippy.js';
+// import 'tippy.js/dist/tippy.css';
 const socket = io('/')
 const peer = new Peer(undefined)
 const videogrid = document.querySelector('.video-grid')
@@ -191,6 +193,7 @@ const video= document.querySelector(".video");
 const screenshare= document.querySelector(".screenshare");
 const chat = document.querySelector(".enable-chat")
 const close = document.querySelector("#close")
+const closecap = document.querySelector("#close-caption")
 let popup = document.querySelector('.infotext');
 const info= document.querySelector(".info");
 let textinfo = '';
@@ -272,6 +275,13 @@ close.addEventListener("click", ()=>{
     document.querySelector(".chatbox").style.display="none";
     chat.style.backgroundImage = "url('/icons/chat-bubbles-with-ellipsis (1).png')";
     chat.style.backgroundColor = "rgb(80, 80, 80)";
+    // chat.style.display = "block";
+})
+closecap.addEventListener("click", ()=>{
+    console.log(document.querySelector(".chatbox").style.display);
+    document.querySelector(".live-caption").style.display="none";
+    // chat.style.backgroundImage = "url('/icons/chat-bubbles-with-ellipsis (1).png')";
+    // chat.style.backgroundColor = "rgb(80, 80, 80)";
     // chat.style.display = "block";
 })
 info.addEventListener("click", ()=>{
@@ -474,6 +484,7 @@ socket.on("back", (usern, userId)=>{
 //     cctext.style.display = "none";
 //     cursocket = null;
 // })
+
 const caption = document.querySelector(".caption")
 let cctext = document.getElementById('caption-text');
 let caps = document.querySelector(".captions");
@@ -611,3 +622,65 @@ vcmdbtn.addEventListener("click", ()=>{
     }
 })
 
+//button hover --> tippy.js
+
+tippy('.audio', {
+    content: 'Toggle audio input',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('.video', {
+    content: 'Toggle video input',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('.call', {
+    content: 'Disconnect Call',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('.screenshare', {
+    content: 'Share Screen',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('.info', {
+    content: 'Meeting Information',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('.caption', {
+    content: 'Enable speech caption for peers',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('.hand', {
+    content: 'Raise Hand',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('.brb', {
+    content: 'Enable be right back',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('.enable-chat', {
+    content: 'Open chat box',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('.v-cmd', {
+    content: 'Video commands',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('#close', {
+    content: 'Close chat box',
+    arrow: false,
+    theme: 'custom',
+});
+tippy('#close-caption', {
+    content: 'Close caption box',
+    arrow: false,
+    theme: 'custom',
+});

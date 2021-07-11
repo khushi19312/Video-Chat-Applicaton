@@ -103,14 +103,14 @@ io.on('connection', socket => {
             socket.to(meetId).emit("captions-stop");
         })
         socket.on("new-participant", (data)=>{
-            console.log('server side', data);
+            console.log('server side np', data);
             const part = new Part({EmailId:data.email, userName:data.user, meetID:meetId})
             part.save().then(()=>{
                 //retrieve from the database where meeting id is meetID  --> array data
                 Part.find({meetID: meetId}, (err, result)=>{
                     if(err) throw err;
                     else{
-                        // console.log(result);
+                        console.log(result);
                         io.to(meetId).emit("participants", result);
                     }
                 })
@@ -119,27 +119,21 @@ io.on('connection', socket => {
         })
         socket.on("participant-name-update", (data)=>{
             console.log('server side', data);
-            let oldval = null;
-            Part.findOne({EmailId: data.email}, (err, result)=>{
+            // let oldval = null;
+            let oldval = {EmailId: data.email};
+            var newval = { $set: {userName:data.user, meetID:meetId} };
+            Part.updateOne(oldval, newval, (err, result)=>{
                 if(err) throw err
                 else{
-                    oldval = result;
-                    oldval.userName = data.user;
-                    oldval.save().then(()=>{
-                        //retrieve from the database where meeting id is meetID  --> array data
-                        Part.find({meetID: meetId}, (err, result)=>{
-                            if(err) throw err;
-                            else{
-                                console.log(result);
-                                io.to(meetId).emit("participants", result);
-                            }
-                        })
-                        
+                    Part.find({meetID: meetId}, (err, result)=>{
+                        if(err) throw err;
+                        else{
+                            console.log(result);
+                            io.to(meetId).emit("participants", result);
+                        }
                     })
                 }
-            });
-            
-            
+            }); 
         })
 
     })   

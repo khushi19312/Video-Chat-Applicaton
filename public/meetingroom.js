@@ -1,3 +1,5 @@
+// import tippy from 'tippy.js';
+// import 'tippy.js/dist/tippy.css';
 const socket = io('/')
 const peer = new Peer(undefined)
 const sendroom = document.querySelector("#send-ex");
@@ -10,9 +12,14 @@ let nametext = document.querySelector(".username")
 let userIdentity=null;
 
 //email-username
+let flagcheck=0;
 let addtolist = () =>{
-    console.log("heellooo")
-    socket.emit("new-participant", {email: EmailId, user:userName})
+    console.log("heellooo", flagcheck)
+    if(flagcheck===0) {
+        socket.emit("new-participant", {email: EmailId, user:userName})
+        console.log("emited")
+        flagcheck=1;
+    }
     // addtodiv();
 }
 let editname = ()=>{
@@ -47,7 +54,7 @@ let redirectcall = ()=>{
 //chat
 socket.on('user-connected', (userId) => {
     userIdentity=userId
-    socket.emit("new-participant", {email: EmailId, user:userName})
+    // socket.emit("new-participant", {email: EmailId, user:userName})
 })
 socket.on('user-disconnected', (userId) => {
     // if (participantlist[EmailId]) participantlist[EmailId].remove()
