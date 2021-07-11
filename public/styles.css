@@ -95,6 +95,8 @@ body, h4{
     position: absolute;
     max-width: 1200px;
     max-height: 700px;
+    /* max-width: 70%;
+    max-height: 70%; */
     size: fixed;
     border-radius: 10px;
     top: 5%;
@@ -563,5 +565,5 @@ video {
     background-color: #6264a7;
     color: white;
     font-family: "Roboto";
-    font-size: 14px;
+    font-size: 12px;
 }

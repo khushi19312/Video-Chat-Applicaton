@@ -59,7 +59,7 @@ socket.on('user-connected', (userId) => {
 socket.on('user-disconnected', (userId) => {
     if (peers[userId]) peers[userId].close()
 })
-//joining the meeting
+//On joining the meeting
 peer.on('open', id =>{
     socket.emit('join-meet', MEET_ID, id, socket.id)
     userIdentity = id;
@@ -81,14 +81,15 @@ const onNewUserConnection = (userId, stream) => {
     peers[userId] = call;
 }
 
-//layout grid video
+//Function to maintain a layout of the video grid, resizing the video on addition of more people.
+//the video dimensions change with addition of people into the meeting
 const addVideoStream = (video, stream) => {
     video.srcObject = stream
     console.log(peers)
     video.addEventListener('loadedmetadata', () => {
-        // let {w, h} = layout();
         var num = Object.keys(peers).length + 1;
         console.log(num);
+        //If there is just one person in the call, then the entire screen has their video.
         if(num==1) {
             video.play()
             video.style.width = '1000px';
@@ -104,7 +105,6 @@ const addVideoStream = (video, stream) => {
             video.style.width = '500px';
             video.style.height = 'auto';
             videogrid.style.setProperty("--cols", 2);
-            // videogrid.style.setProperty("--rows", 2);
             videogrid.append(video);
         }
         else if(num>4 && num<=6){
@@ -115,7 +115,6 @@ const addVideoStream = (video, stream) => {
             video.style.width = '400px';
             video.style.height = 'auto';
             videogrid.style.setProperty("--cols", 3);
-            // videogrid.style.setProperty("--rows", 3);
             videogrid.append(video);
         }
         else if(num>6 && num<=12){
@@ -135,7 +134,6 @@ const addVideoStreamscreen = (video, stream) => {
     video.srcObject = stream
     console.log(peers)
     video.addEventListener('loadedmetadata', () => {
-        // let {w, h} = layout();
         var num = Object.keys(peers).length + 2;
         console.log(num);
         if(num==1) {
@@ -151,7 +149,6 @@ const addVideoStreamscreen = (video, stream) => {
             video.style.width = '500px';
             video.style.height = 'auto';
             videogrid.style.setProperty("--cols", 2);
-            // videogrid.style.setProperty("--rows", 2);
             videogrid.append(video);
         }
         else if(num>4 && num<=6){
@@ -160,7 +157,6 @@ const addVideoStreamscreen = (video, stream) => {
             video.style.width = '400px';
             video.style.height = 'auto';
             videogrid.style.setProperty("--cols", 3);
-            // videogrid.style.setProperty("--rows", 3);
             videogrid.append(video);
         }
         else if(num>6 && num<=12){
@@ -174,26 +170,10 @@ const addVideoStreamscreen = (video, stream) => {
         }
     })
 }
-const layout = ()=>{
-    var num = Object.keys(peers).length + 1; 
-    console.log(num);
-    let w='800px';
-    let h='550px';
-    let col= 1;
-    if (num > 1 && num <= 4) { 
-        w = '400px';
-        h = '225px';
-        col=2;
 
-    } else if (num > 4) {
-        w = '200px';
-        h = '112.5px';
-        col=3;
-    }
-    return {w, h}
-}
-
-//controls
+//Controls for the meeting, buttons to toggle options.
+//These include: audio toggle, video toggle, screensharing, toggle chat box, toggle speech caption for the meeting, 
+//meeting information, and end call. The style of the buttons is aslo updated to indicate changes.
 const audio= document.querySelector(".audio");
 const video= document.querySelector(".video");
 const screenshare= document.querySelector(".screenshare");
@@ -202,15 +182,17 @@ const close = document.querySelector("#close")
 const closecap = document.querySelector("#close-caption")
 let popup = document.querySelector('.infotext');
 const info= document.querySelector(".info");
+const end_call = document.querySelector('#end-call');
 let textinfo = '';
 textinfo+='<p><strong>Meeting Details</strong></p>'
 textinfo+='<p><strong>URL: </strong>https://khushi-vc-app.herokuapp.com/'+MEET_ID+'</p>'
 textinfo+='<p><strong>Meet Id: </strong>'+MEET_ID+'</p>'
 popup.innerHTML +=textinfo;
-const end_call = document.querySelector('#end-call');
+//flags to manage status of the control, i.e where the optionis currenty in use or not
 let videoflag=0;
 let audioflag=0;
 let flaginfo=0;
+//function to toggle users audio input, the boolean value of whether AudioTrack is enabled or not is toggled
 audio.addEventListener("click", ()=>{
     console.log('heard audio toggle')
     myvideostream.getAudioTracks()[0].enabled = !(myvideostream.getAudioTracks()[0].enabled);
@@ -225,6 +207,7 @@ audio.addEventListener("click", ()=>{
         audioflag=0;
     }
 })
+//function to toggle users video input, the boolean value of whether VideoTrack is enabled or not is toggled
 video.addEventListener("click", ()=>{
     console.log('heard video toggle')
     myvideostream.getVideoTracks()[0].enabled = !(myvideostream.getVideoTracks()[0].enabled);
@@ -239,19 +222,18 @@ video.addEventListener("click", ()=>{
         videoflag=1;
     }
 })
+//function to enable screensharing by the user. The Display Media is obtained from the user, only on getting
+//the display media, the users videoTrack is replaced by the screen display for the peers to see.
 screenshare.addEventListener("click", (event)=>{
     let displaypromise = navigator.mediaDevices.getDisplayMedia({
         video: {cursor: "always"},
         audio: {echocancellation: true, noiseSuppression: true}
     });
     displaypromise.then((stream)=>{
-        // peer.call(userIdentity, stream);
         let videoTrack = stream.getVideoTracks()[0];
         console.log(currentpeer);
         screenshare.style.backgroundImage = 'url("/icons/upload-white.png")';
         screenshare.style.backgroundColor = "#6264a7";
-        // let screen = document.createElement("video")
-        // addVideoStreamscreen(screen, stream);
         videoTrack.onended = ()=>{
             let videoTrack = myvideostream.getVideoTracks()[0];
             let sender = currentpeer.getSenders().find((s)=>{
@@ -260,7 +242,6 @@ screenshare.addEventListener("click", (event)=>{
             sender.replaceTrack(videoTrack)
             screenshare.style.backgroundImage = 'url("/icons/upload.png")';
             screenshare.style.backgroundColor = "rgb(80, 80, 80)";
-            // screen.remove()
         }
         let sender = currentpeer.getSenders().find((s)=>{
             return s.track.kind == videoTrack.kind
@@ -269,6 +250,7 @@ screenshare.addEventListener("click", (event)=>{
         
     })
 })
+//To pop up the chat box
 chat.addEventListener("click", ()=>{
     console.log(document.querySelector(".chatbox").style.display);
     document.querySelector(".chatbox").style.display="block";
@@ -276,8 +258,8 @@ chat.addEventListener("click", ()=>{
     document.querySelector("#send").style.display="block";
     chat.style.backgroundImage = "url('/icons/chat-bubbles-with-ellipsis.png')";
     chat.style.backgroundColor = "#6264a7";
-    // chat.style.display = "none";
 })
+//To close the popped up chat box
 close.addEventListener("click", ()=>{
     console.log(document.querySelector(".chatbox").style.display);
     document.querySelector(".chatbox").style.display="none";
@@ -287,6 +269,7 @@ close.addEventListener("click", ()=>{
     chat.style.backgroundColor = "rgb(80, 80, 80)";
     // chat.style.display = "block";
 })
+//To close the the live speech caption box 
 closecap.addEventListener("click", ()=>{
     console.log(document.querySelector(".chatbox").style.display);
     document.querySelector(".live-caption").style.display="none";
@@ -294,6 +277,7 @@ closecap.addEventListener("click", ()=>{
     // chat.style.backgroundColor = "rgb(80, 80, 80)";
     // chat.style.display = "block";
 })
+//To get and share the meeting details, to enable others to join the room and hence the meeting
 info.addEventListener("click", ()=>{
     if(flaginfo===0){
         popup.style.display = "block";
@@ -308,14 +292,16 @@ info.addEventListener("click", ()=>{
         info.style.backgroundColor = "rgb(80, 80, 80)";
         flaginfo=0;
     }
-    
 })
+//function to redirect on call end
 let endcall = ()=>{
     console.log(MEET_ID)
     window.location.replace('/'+MEET_ID+"?email="+EmailId);
 }
 
-//chat
+//Chat - The behind functioning of the chat using web sockets. On recieveing inputs from the user to send to the peers 
+//in the call, the text is sent to the server side and then broadcasted to all the peers in the call and the room. 
+//There is a function to listen to any such message broadcast, inorder to render the text on the chat box
 const send = document.querySelector("#send");
 const message = document.querySelector("#message");
 let output = document.querySelector("#messages");
@@ -328,6 +314,7 @@ if(send) send.addEventListener("click", ()=>{
         userName: UName
     });
 })
+//To lsiten to event of any message broadcast
 socket.on('broadcastMessage', (data)=>{
     console.log("hello")
     console.log('client side ', data);
@@ -344,7 +331,8 @@ socket.on('broadcastMessage', (data)=>{
     document.querySelector(".chatbox").scrollTop = document.querySelector(".chatbox").scrollHeight;
 })
 
-//activity board
+//Activity Board - to show the latest activity of the peers in the call. This board shows all the peers who have currently
+//either raised their hand or though who are away from the meeting sue to some reason and would be back in a short while.
 const hand = document.querySelector(".hand");
 const brb = document.querySelector(".brb");
 let notice = document.querySelector("#messages-notice");
@@ -380,6 +368,8 @@ brb.addEventListener("click", ()=>{
     }
 })
 let text="";
+//In order to listen to the event of any peer either raise their hand or notify a 'be-right-back'. Also listening to the 
+//ebents of hand being put down and a person who was away coming back
 socket.on("hand-raised", (usern, userId)=>{
     console.log('hand raised by ', usern)
     noticelist.push('<p><strong>'+usern+'</strong> raised hand</p>')
@@ -423,79 +413,9 @@ socket.on("back", (usern, userId)=>{
     notice.innerHTML = text;
 })
 
-//caption, status-implemented locally
-// const caption = document.querySelector(".caption")
-// let capflag=0;
-// let cctext = document.getElementById('caption-text');
-// let recognizing = true;
-// let recognition = new webkitSpeechRecognition();
-// recognition.continuous = true;
-// recognition.interimResults = true;
-// let cursocket = null;
-// recognition.onstart = () => {
-//     recognizing = true;
-// };
-// recognition.onend = () => {
-//     recognizing = false;
-// };
-// recognition.onresult = (event) => {
-//     for (let i = event.resultIndex; i < event.results.length; ++i) {
-//         if(event.results[i][0].confidence > 0.4) {
-//             console.log(capitalize(event.results[i][0].transcript))
-//             if(audioflag===0) cctext.innerHTML = capitalize(event.results[i][0].transcript);
-//             console.log(capitalize(event.results[i][0].transcript))
-//             socket.emit("caps", {text:capitalize(event.results[i][0].transcript), user: userName, tosocket: cursocket})
-//         }
-//     }
-// };
-// const capitalize = (s) => {
-//     let first_char = /\S/;
-//     return s.replace(first_char, (m) => { 
-//         return m.toUpperCase(); 
-//   }); 
-// }
-// let caps = document.querySelector(".captions");
-// let textcap=""
-// socket.on("caps-broadcast", (data)=>{
-//     console.log(data.text)
-//     textcap = '<p>'+data.username+': '+ data.text +'</p>';
-//     caps.innerHTML+=textcap;
-// })
-// caption.addEventListener("click", (event)=>{
-//     console.log('captions')
-//     if(capflag) {
-//         caption.style.backgroundImage = "url('/icons/subtitles.png')";
-//         caption.style.backgroundColor = "rgb(80, 80, 80)";
-//         // recognition.stop();
-//         document.querySelector(".live-captions").style.display = "inline-block";
-//         // return;
-//         socket.emit("req-caption-end", socket.id);
-//     }
-//     else {
-//         caption.style.backgroundImage = "url('/icons/subtitles-white.png')";
-//         caption.style.backgroundColor = "#6264a7";
-//         document.querySelector(".live-captions").style.display = "inline-block";
-//         // recognition.start();
-//         socket.emit("req-caption", socket.id);
-//     }
-// })
-// socket.on("req-caption-broadcast", (socketId)=>{
-//     console.log("caption req")
-//     caption.style.backgroundImage = "url('/icons/subtitles-white.png')";
-//     caption.style.backgroundColor = "#6264a7";
-//     cctext.style.display = "inline-block";
-//     recognition.start();
-//     cursocket = socketId;
-// })
-// socket.on("req-caption-end-broadcast", ()=>{
-//     console.log("caption req cancel")
-//     caption.style.backgroundImage = "url('/icons/subtitles.png')";
-//     caption.style.backgroundColor = "rgb(80, 80, 80)";
-//     recognition.stop();
-//     cctext.style.display = "none";
-//     cursocket = null;
-// })
-
+//Enabling speech captions - A user can enable this mode to let all the peers in the meeting read through their speech
+//Implemented using webkitSpeechRecognition web api, as of now, it does not work on all the the browsers
+//The audio heard by the microphone is recognised and concerted into text and boradcasted to other peer for them to read
 const caption = document.querySelector(".caption")
 let cctext = document.getElementById('caption-text');
 let caps = document.querySelector(".captions");
@@ -503,12 +423,17 @@ let recognizing = false;
 let recognition = new webkitSpeechRecognition();
 recognition.continuous = true;
 recognition.interimResults = false;
+let textcap="";
+let speaker = document.querySelector("#speaker");
+let capflag=0;
+//Functions to start and stop the process of taking speech input to process
 recognition.onstart = () => {
     recognizing = true;
 };
 recognition.onend = () => {
     recognizing = false;
 };
+//converting speeh to text and broadcasting to peers
 recognition.onresult = (event) => {
     for (let i = event.resultIndex; i < event.results.length; ++i) {
         if(event.results[i][0].confidence > 0.4) {
@@ -519,13 +444,13 @@ recognition.onresult = (event) => {
         }
     }
 };
+//This function ensures capitalisation on sentence in the speech
 const capitalize = (s) => {
     let first_char = /\S/;
     return s.replace(first_char, (m) => { 
         return m.toUpperCase(); 
   }); 
 }
-let capflag=0;
 caption.addEventListener("click", (event)=>{
     console.log('captions')
     if(capflag===1) {
@@ -544,8 +469,8 @@ caption.addEventListener("click", (event)=>{
         capflag=1;
     }
 })
-let textcap="";
-let speaker = document.querySelector("#speaker");
+//Listening to the event of live speech caption being enabled by one of the peers and also the event  
+//of them stopping the live speech caption broadcast
 socket.on("captions", (data)=>{
     console.log(data.text)
     document.querySelector(".live-captions").style.display = "block";
@@ -558,20 +483,24 @@ socket.on("captions-stop", ()=>{
     document.querySelector(".live-captions").style.display = "none";
 })
 
-//voice commands
+//Voice commands - The web application also has voice commands to raise hands and to indicate that the user
+//will "be-right-back". This feature also makes use of the web api, webkitSpeechRecognition.
 const vcmdbtn = document.querySelector(".v-cmd");
 const vcmdinstructions = document.querySelector(".voice-commands")
-let vcmdflag=0;
 let commands = false;
 let rec = new webkitSpeechRecognition();
 rec.continuous = true;
 rec.interimResults = true;
+let vcmdflag=0;
+let commandflag=0;
 rec.onstart = () => {
     console.log("started")
 };
 rec.onend = () => {
     console.log("stopped");
 };
+//The speech is first converted to text and then compared with the fixed commands and if true, corresponding
+//socket events are emitted to raise hand and indicate "be-right-back"
 rec.onresult = (event) => {
     for (let i = event.resultIndex; i < event.results.length; ++i) {
         console.log(event.results[i][0].transcript)
@@ -603,7 +532,7 @@ rec.onresult = (event) => {
         }
     }
 };
-let commandflag=0;
+//to toggle the voice commands option
 window.addEventListener("keydown", (e)=>{
     console.log(e)
     let keycode = e.key;
@@ -618,6 +547,7 @@ window.addEventListener("keydown", (e)=>{
         } 
     }
 })
+//Foe displaying the instructions of the screen
 vcmdbtn.addEventListener("click", ()=>{
     if(vcmdflag===0){
         vcmdbtn.style.backgroundImage = "url('/icons/voice-white.png')";
@@ -633,8 +563,9 @@ vcmdbtn.addEventListener("click", ()=>{
     }
 })
 
-//button hover --> tippy.js
-
+//Button hover - Prompting to the user about what a specific button does, if the hover on it. This is important to ensure 
+//that no button stays unrecognised and there is a proper feedback to the users
+//Implemented using the tippy.js
 tippy('.audio', {
     content: 'Toggle audio input',
     arrow: false,

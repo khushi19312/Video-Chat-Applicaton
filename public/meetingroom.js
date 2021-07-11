@@ -1,26 +1,22 @@
-// import tippy from 'tippy.js';
-// import 'tippy.js/dist/tippy.css';
 const socket = io('/')
 const peer = new Peer(undefined)
+//
 const sendroom = document.querySelector("#send-ex");
 const messageroom = document.querySelector("#message-ex")
 let outputroom = document.querySelector("#messages-ex")
 const editusername = document.querySelector(".edit-name")
-let userName="Lorem Ipsum";
-// let EmailId="";
 let nametext = document.querySelector(".username")
 let userIdentity=null;
+let userName="Lorem Ipsum";
 
-//email-username
+//functions to manage email-username input and updation
 let flagcheck=0;
 let addtolist = () =>{
     console.log("heellooo", flagcheck)
     if(flagcheck===0) {
-        // setTimeout(socket.emit("new-participant", {email: EmailId, user:userName}), 5000)
         console.log("emited")
         flagcheck=1;
     }
-    // addtodiv();
 }
 let editname = ()=>{
     console.log("clicked")
