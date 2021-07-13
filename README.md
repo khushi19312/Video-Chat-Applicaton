@@ -9,3 +9,6 @@ It has the following features:
 1. Group video calling
 2. before, in and after meeting perssitent chat
 3. "hand raise" and "be right back gesture" that can be used through both UI and voice commands
+4. Customisable user name
+5. Speech captioning
+6. Invite through sharing meeting url or meet id
