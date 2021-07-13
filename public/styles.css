@@ -1,14 +1,24 @@
-/* Home page */
-
+/* Using the font face "Roboto" throughout the web application */
+@font-face{
+    font-family: "Roboto";
+    src: url("../fonts/Roboto-Regular.ttf") format("truetype-variations");
+    font-style: normal;
+}
+/* ----------------Home page------------------- */
 body, h4{
     margin: 0px;
     padding: 0px;
     top: 0px;
 }
-@font-face{
-    font-family: "Roboto";
-    src: url("../fonts/Roboto-Regular.ttf") format("truetype-variations");
-    font-style: normal;
+body{
+    background-color: rgb(245, 245, 245);
+}
+img{
+    position: absolute;
+    width: 40%;
+    height: auto;
+    top: 25%;
+    left: 50%; 
 }
 .header{
     background-color: #6264a7;
@@ -64,7 +74,7 @@ body, h4{
     position: absolute;
     top: 60%;
     left: 5%;
-    width: 268px;
+    width: 20%;
     padding: 14px;
     border: none;
     border-radius: 10px;
@@ -76,9 +86,9 @@ body, h4{
     font-family: "Roboto";
     font-size: 16px;
     position: absolute;
-    top: 70%;
+    top: 72%;
     left: 5%;
-    width: 240px;
+    width: 18%;
     padding: 12px;
     border-color: #6264a7;
     border-radius: 10px;
@@ -87,6 +97,12 @@ body, h4{
     background-color: white;
     
 }
+
+/* -----------------Meeting------------------- */
+.in-call{
+    background-color: rgb(22, 22, 22);
+}
+/* Video and video grid styling */
 .video-grid{
     display: grid;
     justify-content: center;
@@ -115,9 +131,7 @@ video {
     height: 100%;
     border-radius: 10px;
 }
-.in-call{
-    background-color: rgb(22, 22, 22);
-}
+/* chat box styling */
 #close{
     background-image: url("/icons/close.png");
     opacity: 100%;
@@ -215,6 +229,7 @@ video {
     z-index: 2;
     display: none;
 }
+/* notice and activity board styling */
 .notice-board{
     position: absolute;
     width: 20%;
@@ -238,7 +253,7 @@ video {
     outline: none;
     color:rgb(70, 70, 70);
 }
-/*controles*/
+/*controles(function buttons) and the control panel style*/
 .controles{
     width: 1000px;
     height: 60px;
@@ -305,7 +320,7 @@ video {
     transition: background 0.5s ease;
 }
 .audio{
-    background-image: url("/icons/microphone.png");
+    background-image: url("/icons/microphone-slash-black.png");
     background-repeat: no-repeat;
     background-size: 25px 25px;
     background-color: rgb(80, 80, 80);
@@ -361,6 +376,7 @@ video {
     transform: translate(-50%, -50%);
     transition: background 0.5s ease;
 }
+/* captions styling */
 #caption-text{
     font-family: "Roboto";
     font-size: 14px;
@@ -410,6 +426,7 @@ video {
 	border: none;
     left: 90%;
 }
+/* meeting information button and text box styling */
 .info{
     background-image: url("/icons/info.png");
     background-repeat: no-repeat;
@@ -441,25 +458,7 @@ video {
     background-color: #6264a7;
     border-radius: 5px;
 }
-/* #infoclose{
-    background-image: url("/icons/cancel.png");
-    opacity: 100%;
-    background-repeat: no-repeat;
-    background-size: 10px 10px;
-    background-position: center;
-    background-color: rgb(70, 70, 70);
-    border-radius: 100%;
-    height: 12px;
-    width: 12px;
-    margin: 4px;
-    top: 4%;
-    position: inherit;
-    border-color: transparent;
-	outline: none;
-	border: none;
-    left: 92%;
-    z-index: 10px;
-} */
+/* hand raise and brb command button and notice stying */
 .hand{
     background-image: url("/icons/raising-hand.png");
     background-repeat: no-repeat;
@@ -513,6 +512,7 @@ video {
     transform: translate(-50%, -50%);
     transition: background 0.5s ease;
 }
+/* voice commands and voice command info styling */
 .v-cmd{
     background-image: url("/icons/voice.png");
     background-repeat: no-repeat;
@@ -561,6 +561,7 @@ video {
     border-radius: 10px;
     transition: 0.5s ease-in-out;
 }
+/* using tippy.js to enable information prompts for contol buttons */
 .tippy-box[data-theme~='custom'] {
     background-color: #6264a7;
     color: white;

@@ -47,6 +47,7 @@ promise.then((stream) => {
         })
     })
 })
+//Using web sockets and webRTC through peerJS to establidh a connection between the peers to enable communication.
 //if the call from peer is recieved before user media is taken and rendered
 peer.on('call', (call) => {
     callreceived = call;
@@ -197,12 +198,12 @@ audio.addEventListener("click", ()=>{
     console.log('heard audio toggle')
     myvideostream.getAudioTracks()[0].enabled = !(myvideostream.getAudioTracks()[0].enabled);
     if(audioflag===0){
-        audio.style.backgroundImage = 'url("/icons/microphone-slash.png")';
+        audio.style.backgroundImage = 'url("/icons/microphone-white.png")';
         audio.style.backgroundColor = "#6264a7";
         audioflag=1;
     }
     else{
-        audio.style.backgroundImage = 'url("/icons/microphone.png")';
+        audio.style.backgroundImage = 'url("/icons/microphone-slash-black.png")';
         audio.style.backgroundColor = "rgb(80, 80, 80)";
         audioflag=0;
     }

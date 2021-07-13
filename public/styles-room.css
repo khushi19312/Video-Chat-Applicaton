@@ -1,3 +1,10 @@
+/* -------------------meet room------------------- */
+/* Using the font face "Roboto" throughout the web application */
+@font-face{
+    font-family: "Roboto";
+    src: url("../fonts/Roboto-Regular.ttf") format("truetype-variations");
+    font-style: normal;
+}
 body, h4{
     margin: 0px;
     padding: 0px;
@@ -6,11 +13,7 @@ body, h4{
 body{
     background-color:rgb(245, 245, 245);
 }
-@font-face{
-    font-family: "Roboto";
-    src: url("../fonts/Roboto-Regular.ttf") format("truetype-variations");
-    font-style: normal;
-}
+/* header */
 .header{
     background-color: #6264a7;
     width: 100%;
@@ -25,7 +28,7 @@ body{
     font-family: "Roboto";
     font-size: 20px;
     width: 50%;
-    color: white;
+    color: rgb(245, 245, 245);
     padding: 18px;
     padding-left: 5%;
 }
@@ -42,6 +45,7 @@ body{
     padding-right: 5%;
     z-index: 10px;
 }
+/* user name */
 .username-head{
     font-family: "Roboto";
     font-size: 20px;
@@ -57,7 +61,7 @@ body{
     top: 30%;
     width: 18%;
     position: absolute;
-    color: darkgray;
+    color: #a9a9a9;
     padding: 18px;
     padding-left: 5%;
 }
@@ -87,6 +91,7 @@ body{
 	border: none;
     left: 4.5%;
 }
+/* buttons to navigate to the homme page and to the meeting */
 .join-call{
     font-family: "Roboto";
     font-size: 16px;
@@ -115,6 +120,7 @@ body{
     color: white;
     text-align: left;
 }
+/* invite participands and meeting information */
 .invite{
     background-image: url("/icons/add-user.png");
     opacity: 100%;
@@ -147,6 +153,7 @@ body{
     border-radius: 5px;
     z-index: 1;
 }
+/* participant list display */
 .part-heading{
     font-family: "Roboto";
     font-size: 18px;
@@ -175,12 +182,13 @@ body{
     left: 3%;
     padding: 12px;
     margin: 5px;
-    color:rgb(70, 70, 70);
+    color:#464646;
 }
 .p{
     border-left: #6264a7;
     border-width: 1px;
 }
+/* chat box and message styling */
 .chatbox-ex{
     position: absolute;
     width: 40%;
